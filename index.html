@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
     <nav class="nav-blur">
@@ -39,9 +40,7 @@
             <p class="subtitle">Bienvenue dans notre univers</p>
         </div>
         <div class="video-background">
-            <video autoplay muted loop playsinline>
-                <source src="assets/videos/hero-video.mp4" type="video/mp4">
-            </video>
+            <div id="youtube-player"></div>
         </div>
     </header>
 
@@ -257,6 +256,33 @@
                 navLinks.classList.remove('active');
             }
         });
+    </script>
+
+    <script>
+        // Configuration du lecteur YouTube
+        let player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                videoId: 'EnyRmSHLPfo',
+                playerVars: {
+                    autoplay: 1,
+                    loop: 1,
+                    controls: 0,
+                    showinfo: 0,
+                    mute: 1,
+                    modestbranding: 1,
+                    playsinline: 1,
+                    playlist: 'EnyRmSHLPfo',
+                    start: 1042
+                },
+                events: {
+                    onReady: function(e) {
+                        e.target.mute();
+                        e.target.playVideo();
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
