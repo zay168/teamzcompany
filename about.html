@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À propos - TEAMZ</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+<body>
+    <nav class="nav-blur">
+        <div class="logo">TEAMZ</div>
+        <div class="burger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html#videos">Vidéos</a>
+            <a href="about.html" class="active">À propos</a>
+            <a href="index.html#contact">Contact</a>
+            <div class="youtube-sub">
+                <a href="https://www.youtube.com/@TEAMZ-a" target="_blank" rel="noopener" class="yt-button">
+                    <svg class="yt-icon" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                    S'abonner
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <section class="about-hero">
+        <div class="glitch-overlay"></div>
+        <div class="about-content">
+            <h1 class="cyber-glitch" data-text="À Propos">À Propos</h1>
+            <div class="about-text">
+                <p class="intro">Bienvenue sur <span class="highlight">TEAMZ Horizon</span>, le site dédié à notre passion pour le gaming et la créativité numérique.</p>
+                
+                <div class="about-card creator-card" data-tilt>
+                    <div class="card-decoration"></div>
+                    <div class="creator-info">
+                        <h2>Zayd</h2>
+                        <span class="role">Développeur Web & Créateur de Contenu</span>
+                        <div class="tech-stack">
+                            <span class="tech-badge">HTML</span>
+                            <span class="tech-badge">CSS</span>
+                            <span class="tech-badge">JavaScript</span>
+                            <span class="tech-badge">Gaming</span>
+                        </div>
+                    </div>
+                    <p>Je m'appelle Zayd, un passionné de programmation et de développement web. Depuis 2 ans, je me plonge dans l'univers de la création de pages HTML et d'autres projets numériques. Mon objectif est de concevoir des sites futuristes et visuellement époustouflants qui repoussent les limites de la technologie.</p>
+                </div>
+
+                <div class="about-card style-card" data-tilt>
+                    <div class="card-decoration"></div>
+                    <h2>Mon Style</h2>
+                    <div class="style-icons">
+                        <div class="style-icon">🎨</div>
+                        <div class="style-icon">💻</div>
+                        <div class="style-icon">🎮</div>
+                    </div>
+                    <p>Mon style se caractérise par l'utilisation de designs RGB, des animations complexes, et des effets impressionnants comme le parallax scrolling pour offrir une expérience unique et captivante. Je suis toujours en quête de perfection, cherchant à rendre chaque détail de mes projets à la fois esthétique et fonctionnel.</p>
+                </div>
+
+                <div class="about-card vision-card" data-tilt>
+                    <div class="card-decoration"></div>
+                    <h2>Ma Vision</h2>
+                    <div class="vision-quote">" La créativité n'a pas de limites "</div>
+                    <p>Je m'efforce également de développer des projets innovants, que ce soit pour ma chaîne YouTube ou pour d'autres initiatives. Avec une passion inébranlable pour le code et une envie constante d'apprendre, je souhaite partager cette aventure avec vous.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+    <script>
+        // Initialisation de l'effet Tilt
+        VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+            max: 5,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.2,
+        });
+
+        // Curseur personnalisé
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX + 'px';
+                cursorFollower.style.top = e.clientY + 'px';
+            }, 100);
+        });
+
+        // Menu burger
+        const burgerMenu = document.querySelector('.burger-menu');
+        const navLinks = document.querySelector('.nav-links');
+        const navLinksItems = document.querySelectorAll('.nav-links a');
+
+        burgerMenu.addEventListener('click', () => {
+            burgerMenu.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        navLinksItems.forEach(link => {
+            link.addEventListener('click', () => {
+                burgerMenu.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!navLinks.contains(e.target) && !burgerMenu.contains(e.target)) {
+                burgerMenu.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
+
+        // Animations GSAP améliorées
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animation du titre
+        gsap.from('.cyber-glitch', {
+            opacity: 0,
+            y: 50,
+            duration: 1.5,
+            ease: "power4.out"
+        });
+
+        // Animation de l'intro
+        gsap.from('.intro', {
+            opacity: 0,
+            y: 30,
+            duration: 1,
+            delay: 0.5
+        });
+
+        // Animation des cartes
+        gsap.from('.about-card', {
+            opacity: 0,
+            y: 100,
+            duration: 1,
+            stagger: 0.3,
+            scrollTrigger: {
+                trigger: '.about-text',
+                start: 'top 80%',
+                end: 'bottom 20%',
+                toggleActions: "play none none reverse"
+            }
+        });
+
+        // Animation des badges technologiques
+        gsap.from('.tech-badge', {
+            scale: 0,
+            opacity: 0,
+            duration: 0.5,
+            stagger: 0.1,
+            delay: 1
+        });
+
+        // Animation des icônes de style
+        gsap.from('.style-icon', {
+            scale: 0,
+            rotation: 360,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.2,
+            scrollTrigger: {
+                trigger: '.style-card',
+                start: 'top 70%'
+            }
+        });
+    </script>
+</body>
+</html> 
