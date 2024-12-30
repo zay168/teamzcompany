@@ -100,6 +100,75 @@
         </div>
     </section>
 
+    <div class="modal" id="modal-dev">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Développement Web</h2>
+            <div class="modal-body">
+                <h3>Services inclus :</h3>
+                <ul>
+                    <li>Développement de sites web responsifs</li>
+                    <li>Intégration d'animations personnalisées</li>
+                    <li>Optimisation des performances</li>
+                    <li>Support technique post-livraison</li>
+                </ul>
+                <h3>Tarifs :</h3>
+                <ul>
+                    <li>Site vitrine : à partir de 90€</li>
+                    <li>Site e-commerce : à partir de 150€</li>
+                    <li>Applications web : sur devis</li>
+                </ul>
+                <a href="index.html#contact" class="contact-btn">Nous contacter</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-design">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Design Graphique</h2>
+            <div class="modal-body">
+                <h3>Services inclus :</h3>
+                <ul>
+                    <li>Création de logos</li>
+                    <li>Design de bannières YouTube</li>
+                    <li>Identité visuelle complète</li>
+                    <li>Illustrations personnalisées</li>
+                </ul>
+                <h3>Tarifs :</h3>
+                <ul>
+                    <li>Logo simple : 45€</li>
+                    <li>Pack YouTube : 75€</li>
+                    <li>Identité complète : 120€</li>
+                </ul>
+                <a href="index.html#contact" class="contact-btn">Nous contacter</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-video">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Montage Vidéo</h2>
+            <div class="modal-body">
+                <h3>Services inclus :</h3>
+                <ul>
+                    <li>Montage professionnel</li>
+                    <li>Effets spéciaux</li>
+                    <li>Correction colorimétrique</li>
+                    <li>Animations personnalisées</li>
+                </ul>
+                <h3>Tarifs :</h3>
+                <ul>
+                    <li>Montage simple : 60€</li>
+                    <li>Montage avec effets : 90€</li>
+                    <li>Projets complexes : sur devis</li>
+                </ul>
+                <a href="index.html#contact" class="contact-btn">Nous contacter</a>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
     <script>
         // Initialisation de l'effet Tilt
@@ -182,6 +251,32 @@
                 trigger: '.products-grid',
                 start: 'top 80%'
             }
+        });
+
+        // Gestion des modales
+        const modals = document.querySelectorAll('.modal');
+        const serviceBtns = document.querySelectorAll('.service-btn');
+        const closeBtns = document.querySelectorAll('.close-modal');
+
+        serviceBtns.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const modalId = ['modal-dev', 'modal-design', 'modal-video'][index];
+                document.getElementById(modalId).classList.add('active');
+            });
+        });
+
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.closest('.modal').classList.remove('active');
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            modals.forEach(modal => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
         });
     </script>
 </body>

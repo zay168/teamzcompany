@@ -277,6 +277,18 @@
     <script>
         // Configuration du lecteur YouTube
         let player;
+        
+        function onPlayerReady(event) {
+            event.target.mute();
+            event.target.playVideo();
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                player.playVideo();
+            }
+        }
+
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
                 videoId: 'W5LPcpIRLzs',
@@ -285,17 +297,22 @@
                     loop: 1,
                     controls: 0,
                     showinfo: 0,
-                    mute: 1,
+                    autohide: 1,
                     modestbranding: 1,
-                    playsinline: 1,
+                    mute: 1,
+                    start: 180,
                     playlist: 'W5LPcpIRLzs',
-                    start: 180
+                    rel: 0,
+                    playsinline: 1,
+                    disablekb: 1,
+                    iv_load_policy: 3,
+                    enablejsapi: 1,
+                    origin: window.location.origin,
+                    widget_referrer: window.location.origin
                 },
                 events: {
-                    onReady: function(e) {
-                        e.target.mute();
-                        e.target.playVideo();
-                    }
+                    onReady: onPlayerReady,
+                    onStateChange: onPlayerStateChange
                 }
             });
         }
