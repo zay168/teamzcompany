@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique & Services - TEAMZ</title>
+    <link rel="icon" type="image/png" href="assets/icons/logo.png">
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+<body>
+    <nav class="nav-blur">
+        <div class="logo"><a href="index.html">TEAMZ</a></div>
+        <div class="burger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <a href="#videos"><span>Vidéos</span></a>
+            <a href="about.html">À propos</a>
+            <a href="shop.html" class="active">Boutique</a>
+            <a href="index.html#contact">Contact</a>
+            <div class="youtube-sub">
+                <a href="https://www.youtube.com/@TEAMZ-a" target="_blank" rel="noopener" class="yt-button">
+                    <svg class="yt-icon" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                    S'abonner
+                </a>
+            </div>
+            <div class="settings-menu">
+                <button class="settings-btn">
+                    <span class="theme-icon">⚙️</span>
+                </button>
+                <div class="settings-dropdown">
+                    <div class="theme-switch">
+                        <span>Thème Clair</span>
+                        <label class="switch">
+                            <input type="checkbox" id="themeToggle" aria-label="Activer le thème clair">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="shop-hero">
+        <h1 class="cyber-glitch" data-text="Boutique & Services">Boutique & Services</h1>
+        <p class="shop-intro">Découvrez nos services personnalisés et nos produits exclusifs</p>
+    </section>
+
+    <section class="services">
+        <h2>Nos Services</h2>
+        <div class="services-grid">
+            <div class="service-card" data-tilt>
+                <div class="service-icon">💻</div>
+                <h3>Développement Web</h3>
+                <p>Création de sites web modernes et responsifs avec des designs uniques et des animations personnalisées.</p>
+                <div class="price">À partir de 90€</div>
+                <button class="service-btn">En savoir plus</button>
+            </div>
+            <div class="service-card" data-tilt>
+                <div class="service-icon">🎨</div>
+                <h3>Design Graphique</h3>
+                <p>Création de logos, bannières et identités visuelles pour votre marque ou chaîne YouTube.</p>
+                <div class="price">À partir de 45€</div>
+                <button class="service-btn">En savoir plus</button>
+            </div>
+            <div class="service-card" data-tilt>
+                <div class="service-icon">🎬</div>
+                <h3>Montage Vidéo</h3>
+                <p>Montage professionnel de vos vidéos avec effets spéciaux et animations sur mesure.</p>
+                <div class="price">À partir de 60€</div>
+                <button class="service-btn">En savoir plus</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="products">
+        <h2>Nos Produits</h2>
+        <div class="products-grid">
+            <div class="product-card" data-tilt>
+                <div class="product-image coming-soon">
+                    <span>Bientôt disponible</span>
+                </div>
+                <h3>TEAMZ Merch</h3>
+                <p>Collection exclusive de vêtements et accessoires TEAMZ.</p>
+            </div>
+            <div class="product-card" data-tilt>
+                <div class="product-image coming-soon">
+                    <span>Bientôt disponible</span>
+                </div>
+                <h3>Templates Premium</h3>
+                <p>Templates professionnels pour vos projets web et vidéo.</p>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+    <script>
+        // Initialisation de l'effet Tilt
+        VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+            max: 5,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.2,
+        });
+
+        // Gestion du thème
+        const themeToggle = document.getElementById('themeToggle');
+        const settingsBtn = document.querySelector('.settings-btn');
+        const settingsDropdown = document.querySelector('.settings-dropdown');
+
+        // Vérifier le thème sauvegardé
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeToggle.checked = true;
+        }
+
+        // Gérer le changement de thème
+        themeToggle.addEventListener('change', () => {
+            if (themeToggle.checked) {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Menu paramètres
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!settingsDropdown.contains(e.target) && !settingsBtn.contains(e.target)) {
+                settingsDropdown.classList.remove('active');
+            }
+        });
+
+        // Animations GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.from('.shop-hero h1', {
+            opacity: 0,
+            y: 50,
+            duration: 1.5,
+            ease: "power4.out"
+        });
+
+        gsap.from('.shop-intro', {
+            opacity: 0,
+            y: 30,
+            duration: 1,
+            delay: 0.5
+        });
+
+        gsap.from('.service-card', {
+            opacity: 0,
+            y: 50,
+            duration: 1,
+            stagger: 0.2,
+            scrollTrigger: {
+                trigger: '.services-grid',
+                start: 'top 80%'
+            }
+        });
+
+        gsap.from('.product-card', {
+            opacity: 0,
+            y: 50,
+            duration: 1,
+            stagger: 0.2,
+            scrollTrigger: {
+                trigger: '.products-grid',
+                start: 'top 80%'
+            }
+        });
+    </script>
+</body>
+</html> 

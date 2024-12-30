@@ -4,6 +4,131 @@
     --accent-color: #ff4d4d;
     --text-light: #ffffff;
     --spacing-lg: 2rem;
+    --background: #111111;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --nav-bg: rgba(20, 20, 20, 0.8);
+}
+
+/* Thème clair */
+[data-theme="light"] {
+    --primary-color: #ffffff;
+    --text-light: #1a1a1a;
+    --background: #ffffff;
+    --card-bg: #f0f0f0;
+    --nav-bg: rgba(255, 255, 255, 0.95);
+    --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --text-secondary: #666666;
+    --border-color: #e0e0e0;
+}
+
+[data-theme="light"] .contact-section {
+    background: #ffffff;
+}
+
+[data-theme="light"] .features {
+    background: #ffffff;
+}
+
+[data-theme="light"] .about-hero {
+    background: linear-gradient(135deg, #f5f5f5, #ffffff);
+}
+
+[data-theme="light"] .form-group input,
+[data-theme="light"] .form-group textarea {
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .form-group label {
+    color: #666666;
+    background: #ffffff;
+}
+
+[data-theme="light"] .form-group input:focus,
+[data-theme="light"] .form-group textarea:focus {
+    background: #ffffff;
+    border-color: var(--accent-color);
+}
+
+[data-theme="light"] .form-group input:focus ~ label,
+[data-theme="light"] .form-group textarea:focus ~ label,
+[data-theme="light"] .form-group input:valid ~ label,
+[data-theme="light"] .form-group textarea:valid ~ label {
+    color: var(--accent-color);
+    background: #ffffff;
+}
+
+[data-theme="light"] .nav-links.active {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="light"] .burger-menu span {
+    background-color: #1a1a1a;
+}
+
+[data-theme="light"] .feature-card h3 {
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .contact-section h2 {
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .submit-btn {
+    background: var(--accent-color);
+    color: #ffffff;
+}
+
+[data-theme="light"] .hero::after {
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        #ffffff
+    );
+}
+
+[data-theme="light"] .video-background::after {
+    background: linear-gradient(
+        rgba(255, 255, 255, 0.8),
+        rgba(255, 255, 255, 0.7)
+    );
+}
+
+/* Ajustements pour le thème clair */
+[data-theme="light"] .nav-blur {
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .feature-card {
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+}
+
+[data-theme="light"] .about-card {
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+}
+
+[data-theme="light"] .settings-dropdown {
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+}
+
+[data-theme="light"] .feature-card p {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .glitch {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .nav-links a[href="#videos"] {
+    background: rgba(255, 77, 77, 0.05);
+}
+
+[data-theme="light"] .nav-links a[href="#videos"]:hover {
+    background: rgba(255, 77, 77, 0.1);
 }
 
 /* Reset et styles de base */
@@ -17,14 +142,14 @@ body {
     font-family: 'Inter', sans-serif;
     line-height: 1.6;
     color: var(--text-light);
-    background: #111111;
+    background: var(--background);
 }
 
 /* Navigation */
 .nav-blur {
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    background: rgba(20, 20, 20, 0.8);
+    background: var(--nav-bg);
     position: fixed;
     width: 100%;
     z-index: 1000;
@@ -114,23 +239,26 @@ body {
 
 #youtube-player {
     position: absolute;
-    top: 50%;
+    top: 60%;
     left: 50%;
     width: 100vw;
-    height: 100vh;
+    height: 120vh; /* Augmentation de la hauteur pour un meilleur cadrage */
     transform: translate(-50%, -50%);
     pointer-events: none;
+    object-fit: cover;
 }
 
 @media (min-aspect-ratio: 16/9) {
     #youtube-player {
-        height: 56.25vw;
+        height: 120vh; /* Maintien de la hauteur supplémentaire */
+        top: 60%;
     }
 }
 
 @media (max-aspect-ratio: 16/9) {
     #youtube-player {
         width: 177.78vh;
+        top: 60%;
     }
 }
 
@@ -238,7 +366,6 @@ body {
     height: 20px;
     border: 2px solid var(--text-light);
     border-radius: 50%;
-    border-top-color: transparent;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -520,16 +647,20 @@ body {
 .feature-card {
     position: relative;
     z-index: 3;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--card-bg);
     padding: 2rem;
     border-radius: 15px;
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent;
     transition: transform 0.3s ease;
+    animation: rgb-border 6s linear infinite;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 .feature-card:hover {
     transform: translateY(-5px);
+    animation: rgb-border 3s linear infinite;
 }
 
 .feature-icon {
@@ -703,7 +834,7 @@ html {
 }
 
 .about-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg);
     padding: 2.5rem;
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1052,4 +1183,361 @@ html {
 
 .logo a:hover {
     color: var(--accent-color);
+}
+
+/* Styles pour le menu paramètres */
+.settings-menu {
+    position: relative;
+    margin-left: 1rem;
+}
+
+.settings-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.settings-btn:hover {
+    color: var(--accent-color);
+}
+
+.settings-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--nav-bg);
+    border-radius: 8px;
+    padding: 1rem;
+    min-width: 200px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+}
+
+.settings-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.theme-switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--primary-color);
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: var(--text-light);
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--accent-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Mise à jour des styles existants pour supporter le thème */
+body {
+    background: var(--background);
+}
+
+.nav-blur {
+    background: var(--nav-bg);
+}
+
+.feature-card {
+    background: var(--card-bg);
+}
+
+/* Ajout des icônes pour le thème */
+.theme-icon {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .settings-dropdown {
+        position: fixed;
+        top: unset;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+/* Section Boutique */
+.shop-hero {
+    min-height: 40vh;
+    padding: 120px 5% 60px;
+    background: linear-gradient(135deg, var(--background), var(--primary-color));
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.shop-intro {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 1rem auto;
+}
+
+/* Services */
+.services {
+    padding: 80px 5%;
+    background: var(--background);
+}
+
+.services h2, .products h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--text-light);
+    background: linear-gradient(45deg, var(--text-light), var(--accent-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.service-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1));
+    pointer-events: none;
+}
+
+.service-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+}
+
+.service-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-light);
+}
+
+.service-card p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.price {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 1.5rem;
+}
+
+.service-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.service-btn:hover {
+    transform: translateY(-2px);
+    background: #ff6666;
+}
+
+/* Produits */
+.products {
+    padding: 80px 5%;
+    background: var(--background);
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.product-card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.product-image {
+    height: 250px;
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.product-image.coming-soon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.product-image span {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border: 2px solid white;
+    border-radius: 20px;
+    z-index: 1;
+}
+
+.product-card h3 {
+    font-size: 1.5rem;
+    margin: 1.5rem;
+    color: var(--text-light);
+}
+
+.product-card p {
+    color: var(--text-secondary);
+    margin: 0 1.5rem 1.5rem;
+    line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .shop-hero {
+        padding: 100px 5% 40px;
+    }
+
+    .services h2, .products h2 {
+        font-size: 2rem;
+    }
+
+    .service-card, .product-card {
+        transform: none !important;
+    }
+}
+
+@keyframes rgb-border {
+    0% {
+        border-color: #ff0000;
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+    }
+    33% {
+        border-color: #00ff00;
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+    }
+    66% {
+        border-color: #0000ff;
+        box-shadow: 0 0 15px rgba(0, 0, 255, 0.3);
+    }
+    100% {
+        border-color: #ff0000;
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+    }
+}
+
+.feature-card {
+    position: relative;
+    z-index: 3;
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: transform 0.3s ease;
+    animation: rgb-border 6s linear infinite;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    animation: rgb-border 3s linear infinite;
 }

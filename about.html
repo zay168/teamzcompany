@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>À propos - TEAMZ</title>
+    <link rel="icon" type="image/png" href="assets/icons/logo.png">
     <link rel="stylesheet" href="styles/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -20,6 +21,7 @@
         <div class="nav-links">
             <a href="#videos"><span>Vidéos</span></a>
             <a href="about.html" class="active">À propos</a>
+            <a href="shop.html">Boutique</a>
             <a href="index.html#contact">Contact</a>
             <div class="youtube-sub">
                 <a href="https://www.youtube.com/@TEAMZ-a" target="_blank" rel="noopener" class="yt-button">
@@ -28,6 +30,20 @@
                     </svg>
                     S'abonner
                 </a>
+            </div>
+            <div class="settings-menu">
+                <button class="settings-btn">
+                    <span class="theme-icon">⚙️</span>
+                </button>
+                <div class="settings-dropdown">
+                    <div class="theme-switch">
+                        <span>Thème Clair</span>
+                        <label class="switch">
+                            <input type="checkbox" id="themeToggle" aria-label="Activer le thème clair">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -51,7 +67,7 @@
                             <span class="tech-badge">HTML</span>
                             <span class="tech-badge">CSS</span>
                             <span class="tech-badge">JavaScript</span>
-                            <span class="tech-badge">Gaming</span>
+                            <span class="tech-badge">Python</span>
                         </div>
                     </div>
                     <p>Je m'appelle Zayd, un passionné de programmation et de développement web. Depuis 2 ans, je me plonge dans l'univers de la création de pages HTML et d'autres projets numériques. Mon objectif est de concevoir des sites futuristes et visuellement époustouflants qui repoussent les limites de la technologie.</p>
@@ -178,6 +194,42 @@
             scrollTrigger: {
                 trigger: '.style-card',
                 start: 'top 70%'
+            }
+        });
+
+        // Gestion du thème
+        const themeToggle = document.getElementById('themeToggle');
+        const settingsBtn = document.querySelector('.settings-btn');
+        const settingsDropdown = document.querySelector('.settings-dropdown');
+
+        // Vérifier le thème sauvegardé
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeToggle.checked = true;
+        }
+
+        // Gérer le changement de thème
+        themeToggle.addEventListener('change', () => {
+            if (themeToggle.checked) {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Gérer l'ouverture/fermeture du menu paramètres
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsDropdown.classList.toggle('active');
+        });
+
+        // Fermer le menu si on clique ailleurs
+        document.addEventListener('click', (e) => {
+            if (!settingsDropdown.contains(e.target) && !settingsBtn.contains(e.target)) {
+                settingsDropdown.classList.remove('active');
             }
         });
     </script>

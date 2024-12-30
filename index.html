@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TEAMZ</title>
+    <link rel="icon" type="image/png" href="assets/icons/logo.png">
     <link rel="stylesheet" href="styles/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -22,6 +23,7 @@
         <div class="nav-links">
             <a href="#videos"><span>Vidéos</span></a>
             <a href="about.html">À propos</a>
+            <a href="shop.html">Boutique</a>
             <a href="#contact">Contact</a>
             <div class="youtube-sub">
                 <a href="https://www.youtube.com/@TEAMZ-a" target="_blank" rel="noopener" class="yt-button">
@@ -30,6 +32,20 @@
                     </svg>
                     S'abonner
                 </a>
+            </div>
+            <div class="settings-menu">
+                <button class="settings-btn">
+                    <span class="theme-icon">⚙️</span>
+                </button>
+                <div class="settings-dropdown">
+                    <div class="theme-switch">
+                        <span>Thème Clair</span>
+                        <label class="switch">
+                            <input type="checkbox" id="themeToggle" aria-label="Activer le thème clair">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -46,9 +62,9 @@
 
     <section class="features">
         <div class="feature-card">
-            <div class="feature-icon">🎮</div>
-            <h3>Gaming</h3>
-            <p>Découvrez nos gameplays exclusifs</p>
+            <div class="feature-icon">🚀</div>
+            <h3>Développement</h3>
+            <p>Découvrez nos projets innovants</p>
         </div>
         <div class="feature-card">
             <div class="feature-icon">🎬</div>
@@ -263,7 +279,7 @@
         let player;
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
-                videoId: 'EnyRmSHLPfo',
+                videoId: 'W5LPcpIRLzs',
                 playerVars: {
                     autoplay: 1,
                     loop: 1,
@@ -272,8 +288,8 @@
                     mute: 1,
                     modestbranding: 1,
                     playsinline: 1,
-                    playlist: 'EnyRmSHLPfo',
-                    start: 1042
+                    playlist: 'W5LPcpIRLzs',
+                    start: 180
                 },
                 events: {
                     onReady: function(e) {
@@ -283,6 +299,44 @@
                 }
             });
         }
+    </script>
+
+    <script>
+        // Gestion du thème
+        const themeToggle = document.getElementById('themeToggle');
+        const settingsBtn = document.querySelector('.settings-btn');
+        const settingsDropdown = document.querySelector('.settings-dropdown');
+
+        // Vérifier le thème sauvegardé
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeToggle.checked = true;
+        }
+
+        // Gérer le changement de thème
+        themeToggle.addEventListener('change', () => {
+            if (themeToggle.checked) {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Gérer l'ouverture/fermeture du menu paramètres
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsDropdown.classList.toggle('active');
+        });
+
+        // Fermer le menu si on clique ailleurs
+        document.addEventListener('click', (e) => {
+            if (!settingsDropdown.contains(e.target) && !settingsBtn.contains(e.target)) {
+                settingsDropdown.classList.remove('active');
+            }
+        });
     </script>
 </body>
 </html>
