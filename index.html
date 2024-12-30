@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEAMZ</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+<body>
+    <nav class="nav-blur">
+        <div class="logo">TEAMZ</div>
+        <div class="burger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <a href="#videos">Vidéos</a>
+            <a href="#about">À propos</a>
+            <a href="#contact">Contact</a>
+            <div class="youtube-sub">
+                <a href="https://www.youtube.com/@TEAMZ-a" target="_blank" rel="noopener" class="yt-button">
+                    <svg class="yt-icon" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                    S'abonner
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="welcome-text">
+            <h1 class="glitch" data-text="TEAMZ">TEAMZ</h1>
+            <p class="subtitle">Bienvenue dans notre univers</p>
+        </div>
+        <div class="video-background">
+            <video autoplay muted loop playsinline>
+                <source src="assets/videos/hero-video.mp4" type="video/mp4">
+            </video>
+        </div>
+    </header>
+
+    <section class="features">
+        <div class="feature-card">
+            <div class="feature-icon">🎮</div>
+            <h3>Gaming</h3>
+            <p>Découvrez nos gameplays exclusifs</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🎬</div>
+            <h3>Contenu Original</h3>
+            <p>Des vidéos uniques et créatives</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🌟</div>
+            <h3>Qualité Premium</h3>
+            <p>Du contenu en haute qualité</p>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2>Contactez-nous</h2>
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <input type="text" id="name" name="name" required>
+                    <label for="name">Votre nom</label>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" name="email" required>
+                    <label for="email">Votre email</label>
+                </div>
+                <div class="form-group">
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                    <label for="message">Votre message</label>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <span class="btn-text">Envoyer</span>
+                    <span class="loader"></span>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        (function() {
+            const TEMPLATE_ID = "template_z1x8poj";
+            const SERVICE_ID = "service_6hr6hio";
+            const PUBLIC_KEY = "eh4BKaPWNCG5iM9UP";
+
+            emailjs.init(PUBLIC_KEY);
+
+            const form = document.getElementById('contactForm');
+            const button = form.querySelector('.submit-btn');
+            const buttonText = button.querySelector('.btn-text');
+            const loader = button.querySelector('.loader');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                buttonText.style.opacity = '0';
+                loader.style.display = 'block';
+                button.disabled = true;
+
+                const templateParams = {
+                    to_name: "Zayd",
+                    from_name: form.name.value,
+                    reply_to: form.email.value,
+                    message: form.message.value,
+                    subject: `Nouveau message de ${form.name.value}`
+                };
+
+                emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams)
+                    .then(() => {
+                        showNotification('success', 'Message envoyé avec succès !');
+                        form.reset();
+                    })
+                    .catch((error) => {
+                        showNotification('error', 'Une erreur est survenue. Veuillez réessayer.');
+                        console.error('Error:', error);
+                    })
+                    .finally(() => {
+                        buttonText.style.opacity = '1';
+                        loader.style.display = 'none';
+                        button.disabled = false;
+                    });
+            });
+
+            function showNotification(type, message) {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 100);
+
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 3000);
+            }
+        })();
+    </script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animation de la navbar au scroll
+        gsap.to(".nav-blur", {
+            scrollTrigger: {
+                start: "top -100",
+                end: "top -100",
+                toggleClass: {targets: ".nav-blur", className: "nav-scrolled"}
+            }
+        });
+
+        // Remplaçons l'animation des cartes features par celle-ci :
+        gsap.from('.feature-card', {
+            scrollTrigger: {
+                trigger: '.features',
+                start: "top 75%",
+            },
+            stagger: 0.2, // Délai entre chaque carte
+            opacity: 0,
+            duration: 1.2,
+            ease: "power2.out"
+        });
+
+        // Animation du texte de bienvenue
+        gsap.from(".welcome-text", {
+            scrollTrigger: {
+                trigger: ".hero",
+                start: "top top",
+                end: "center center",
+                scrub: 1
+            },
+            y: 0,
+            opacity: 1,
+            scale: 1
+        });
+
+        // Animation de la section contact
+        gsap.from(".contact-section .container", {
+            scrollTrigger: {
+                trigger: ".contact-section",
+                start: "top 80%",
+                end: "top 30%",
+                scrub: 1.5,
+                toggleActions: "play none none reverse"
+            },
+            opacity: 0,
+            filter: "blur(10px)",
+            scale: 0.95,
+            duration: 1.5
+        });
+
+        // Ajoutons des animations individuelles pour les éléments du formulaire
+        gsap.utils.toArray('.form-group').forEach((group, i) => {
+            gsap.from(group, {
+                scrollTrigger: {
+                    trigger: group,
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                },
+                opacity: 0,
+                x: -20,
+                duration: 0.6,
+                delay: i * 0.1
+            });
+        });
+
+        // Animation du titre
+        gsap.from(".contact-section h2", {
+            scrollTrigger: {
+                trigger: ".contact-section",
+                start: "top 85%",
+                toggleActions: "play none none reverse"
+            },
+            opacity: 0,
+            y: -20,
+            duration: 0.8
+        });
+    </script>
+
+    <script>
+        // Menu burger
+        const burgerMenu = document.querySelector('.burger-menu');
+        const navLinks = document.querySelector('.nav-links');
+        const navLinksItems = document.querySelectorAll('.nav-links a');
+
+        burgerMenu.addEventListener('click', () => {
+            burgerMenu.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Fermer le menu quand on clique sur un lien
+        navLinksItems.forEach(link => {
+            link.addEventListener('click', () => {
+                burgerMenu.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Fermer le menu quand on clique en dehors
+        document.addEventListener('click', (e) => {
+            if (!navLinks.contains(e.target) && !burgerMenu.contains(e.target)) {
+                burgerMenu.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
