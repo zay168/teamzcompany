@@ -287,6 +287,17 @@
             if (event.data === YT.PlayerState.ENDED) {
                 player.playVideo();
             }
+            
+            // Bloquer les publicités
+            if (event.data === YT.PlayerState.PLAYING) {
+                const currentTime = event.target.getCurrentTime();
+                const duration = event.target.getDuration();
+                
+                // Si une publicité est détectée (temps de lecture anormal)
+                if (currentTime > 0 && currentTime < 5 && duration > 300) {
+                    event.target.seekTo(180, true); // Aller directement à 3 minutes
+                }
+            }
         }
 
         function onYouTubeIframeAPIReady() {
@@ -308,7 +319,12 @@
                     iv_load_policy: 3,
                     enablejsapi: 1,
                     origin: window.location.origin,
-                    widget_referrer: window.location.origin
+                    widget_referrer: window.location.origin,
+                    cc_load_policy: 0, // Désactiver les sous-titres
+                    fs: 0, // Désactiver le mode plein écran
+                    hl: 'fr', // Forcer la langue
+                    color: 'white', // Couleur des contrôles
+                    vq: 'hd720' // Qualité vidéo
                 },
                 events: {
                     onReady: onPlayerReady,
@@ -316,6 +332,19 @@
                 }
             });
         }
+
+        // Tentative de contournement des publicités
+        window.addEventListener('load', function() {
+            const style = document.createElement('style');
+            style.textContent = `
+                .ytp-ad-overlay-close-button,
+                .ytp-ad-skip-button,
+                .ytp-ad-preview-container {
+                    display: none !important;
+                }
+            `;
+            document.head.appendChild(style);
+        });
     </script>
 
     <script>
