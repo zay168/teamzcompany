@@ -1,0 +1,95 @@
+# Configuration de sécurité globale pour TEAMZ
+
+# S'assurer que le .htaccess s'applique à tous les répertoires
+<Directory />
+    Options -Indexes +FollowSymLinks
+    AllowOverride All
+    Require all denied
+</Directory>
+
+# Autoriser l'accès au site web
+<Directory "/c%3A/Users/alsar/Desktop/teamzcompany">
+    Require all granted
+</Directory>
+
+# Rediriger toutes les requêtes vers HTTPS si nécessaire
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Désactiver l'affichage des répertoires
+Options -Indexes
+
+# Protection contre le vol de code source
+<FilesMatch "\.(html|htm|php|js|css)$">
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</FilesMatch>
+
+# Bloquer l'accès aux fichiers sensibles
+<FilesMatch "^(\.htaccess|\.env|web\.config|config\.php)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Protection contre les injections SQL et XSS
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+    RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
+    RewriteRule ^(.*)$ index.html [F,L]
+</IfModule>
+
+# Limiter le téléchargement des fichiers
+<IfModule mod_headers.c>
+    Header set X-Download-Options "noopen"
+</IfModule>
+
+# Politique de sécurité du contenu
+Header set Content-Security-Policy "default-src 'self'; script-src 'self' https://www.youtube.com https://cdnjs.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src https://www.youtube.com; connect-src 'self'"
+
+# Prévention du clickjacking
+Header always append X-Frame-Options DENY
+
+# Désactiver le mode de compatibilité IE
+Header set X-UA-Compatible "IE=edge"
+
+# Durée de vie du cache
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 1 hour"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+    ExpiresByType image/png "access plus 1 month"
+</IfModule>
+
+# Compression des ressources
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+</IfModule>
+
+# Bloquer les requêtes malveillantes
+<IfModule mod_security.c>
+    SecRuleEngine On
+    SecRequestBodyLimit 10000000
+    SecRequestBodyNoFilesLimit 10000000
+</IfModule>
+
+# Redirection des pages
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.html [L]
+
+# Protection des fichiers spécifiques
+<FilesMatch "^(index\.html|about\.html|shop\.html)$">
+    Header set X-Content-Type-Options "nosniff"
+</FilesMatch>
+
+# Logs de sécurité
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" secure
+CustomLog /var/log/apache2/security.log secure
