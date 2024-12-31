@@ -11,6 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://cdn.jsdelivr.net/npm/adblock-detect@1.0.0/dist/adblock-detect.min.js"></script>
 </head>
 <body>
     <nav class="nav-blur">
@@ -415,10 +416,9 @@
     </script>
 
     <script>
-        // Script de blocage de publicités
-        (function() {
-            // Liste des sélecteurs et domaines de publicités
-            const adSelectors = [
+        // Configuration AdBlock
+        const adBlockConfig = {
+            blockedElements: [
                 '[id*="ad"]', 
                 '[class*="ad"]', 
                 '[id*="advertisement"]', 
@@ -429,43 +429,47 @@
                 '.ytp-ad-overlay',
                 '.ytp-ad-skip-button',
                 '.ytp-ad-preview-container'
-            ];
-
-            const adDomains = [
+            ],
+            blockedDomains: [
                 'googlesyndication.com',
                 'doubleclick.net',
                 'adnxs.com',
                 'advertising.com'
-            ];
+            ]
+        };
 
-            // Fonction pour bloquer les publicités
-            function blockAds() {
-                // Supprimer les éléments de publicité
-                adSelectors.forEach(selector => {
+        // Fonction de détection et de blocage des publicités
+        function detectAndBlockAds() {
+            // Vérifier si AdBlock est activé
+            if (window.adblockDetect && window.adblockDetect.isEnabled()) {
+                console.log('AdBlock est activé');
+                
+                // Supprimer les éléments publicitaires
+                adBlockConfig.blockedElements.forEach(selector => {
                     const elements = document.querySelectorAll(selector);
                     elements.forEach(el => el.remove());
                 });
 
-                // Bloquer les requêtes vers des domaines de publicités
+                // Bloquer les requêtes vers des domaines publicitaires
                 const originalFetch = window.fetch;
                 window.fetch = function(input, init) {
                     if (typeof input === 'string') {
                         const url = new URL(input);
-                        if (adDomains.some(domain => url.hostname.includes(domain))) {
-                            return Promise.reject(new Error('Ad blocked'));
+                        if (adBlockConfig.blockedDomains.some(domain => url.hostname.includes(domain))) {
+                            return Promise.reject(new Error('Publicité bloquée'));
                         }
                     }
                     return originalFetch.apply(this, arguments);
                 };
 
-                // Modifier le lecteur YouTube pour éviter les publicités
+                // Modifier le lecteur YouTube
                 if (window.YT && window.YT.Player) {
                     const originalPlayer = window.YT.Player;
                     window.YT.Player = function(id, options) {
                         if (options && options.playerVars) {
+                            // Paramètres pour minimiser les publicités
                             options.playerVars.autoplay = 1;
                             options.playerVars.controls = 0;
-                            options.playerVars.disablekb = 1;
                             options.playerVars.modestbranding = 1;
                             options.playerVars.rel = 0;
                             options.playerVars.showinfo = 0;
@@ -473,21 +477,23 @@
                         return new originalPlayer(id, options);
                     };
                 }
+            } else {
+                console.log('AdBlock non détecté');
             }
+        }
 
-            // Exécuter le blocage des publicités
-            blockAds();
+        // Exécuter la détection et le blocage
+        window.addEventListener('load', detectAndBlockAds);
 
-            // Réexécuter périodiquement pour gérer le contenu dynamique
-            setInterval(blockAds, 1000);
+        // Vérification périodique
+        setInterval(detectAndBlockAds, 1000);
 
-            // Observateur de mutations pour bloquer les publicités qui apparaissent dynamiquement
-            const observer = new MutationObserver(blockAds);
-            observer.observe(document.body, { 
-                childList: true, 
-                subtree: true 
-            });
-        })();
+        // Observateur de mutations
+        const observer = new MutationObserver(detectAndBlockAds);
+        observer.observe(document.body, { 
+            childList: true, 
+            subtree: true 
+        });
     </script>
 </body>
 </html>
