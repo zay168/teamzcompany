@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdn.jsdelivr.net/npm/adblock-detect@1.0.0/dist/adblock-detect.min.js"></script>
 </head>
 <body>
@@ -57,7 +56,10 @@
             <p class="subtitle">Bienvenue dans notre univers</p>
         </div>
         <div class="video-background">
-            <div id="youtube-player"></div>
+            <video id="background-video" autoplay loop muted playsinline>
+                <source src="assets/videos/Untitled ‑ Made with FlexClip.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas la vidéo.
+            </video>
         </div>
     </header>
 
@@ -276,76 +278,35 @@
     </script>
 
     <script>
-        // Configuration du lecteur YouTube
-        let player;
+        // Gestion de la vidéo de fond
+        const backgroundVideo = document.getElementById('background-video');
         
-        function onPlayerReady(event) {
-            event.target.mute();
-            event.target.playVideo();
-        }
-
-        function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.ENDED) {
-                player.playVideo();
-            }
-            
-            // Bloquer les publicités
-            if (event.data === YT.PlayerState.PLAYING) {
-                const currentTime = event.target.getCurrentTime();
-                const duration = event.target.getDuration();
-                
-                // Si une publicité est détectée (temps de lecture anormal)
-                if (currentTime > 0 && currentTime < 5 && duration > 300) {
-                    event.target.seekTo(180, true); // Aller directement à 3 minutes
-                }
-            }
-        }
-
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtube-player', {
-                videoId: 'W5LPcpIRLzs',
-                playerVars: {
-                    autoplay: 1,
-                    loop: 1,
-                    controls: 0,
-                    showinfo: 0,
-                    autohide: 1,
-                    modestbranding: 1,
-                    mute: 1,
-                    start: 180,
-                    playlist: 'W5LPcpIRLzs',
-                    rel: 0,
-                    playsinline: 1,
-                    disablekb: 1,
-                    iv_load_policy: 3,
-                    enablejsapi: 1,
-                    origin: window.location.origin,
-                    widget_referrer: window.location.origin,
-                    cc_load_policy: 0, // Désactiver les sous-titres
-                    fs: 0, // Désactiver le mode plein écran
-                    hl: 'fr', // Forcer la langue
-                    color: 'white', // Couleur des contrôles
-                    vq: 'hd720' // Qualité vidéo
-                },
-                events: {
-                    onReady: onPlayerReady,
-                    onStateChange: onPlayerStateChange
-                }
-            });
-        }
-
-        // Tentative de contournement des publicités
-        window.addEventListener('load', function() {
-            const style = document.createElement('style');
-            style.textContent = `
-                .ytp-ad-overlay-close-button,
-                .ytp-ad-skip-button,
-                .ytp-ad-preview-container {
-                    display: none !important;
-                }
-            `;
-            document.head.appendChild(style);
+        // Assurer que la vidéo recommence au début si elle se termine
+        backgroundVideo.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
         });
+
+        // Ajuster la vidéo pour qu'elle couvre tout l'écran
+        function resizeVideo() {
+            const videoContainer = document.querySelector('.video-background');
+            const video = document.getElementById('background-video');
+            
+            const containerRatio = videoContainer.clientWidth / videoContainer.clientHeight;
+            const videoRatio = video.videoWidth / video.videoHeight;
+
+            if (containerRatio > videoRatio) {
+                video.style.width = '100%';
+                video.style.height = 'auto';
+            } else {
+                video.style.width = 'auto';
+                video.style.height = '100%';
+            }
+        }
+
+        // Redimensionner la vidéo lors du chargement et du redimensionnement
+        window.addEventListener('load', resizeVideo);
+        window.addEventListener('resize', resizeVideo);
     </script>
 
     <script>
