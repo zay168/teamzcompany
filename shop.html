@@ -278,6 +278,33 @@
                 }
             });
         });
+
+        // Protection contre l'inspection du code source
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            // Bloquer Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, F12
+            if ((e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) || 
+                (e.ctrlKey && e.key === 'U') || 
+                e.key === 'F12') {
+                e.preventDefault();
+                alert('Inspection du code source non autorisée.');
+            }
+        });
+
+        // Désactiver la sélection de texte
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+        });
+
+        // Masquer le code source si quelqu'un essaie de l'afficher
+        if (window.console) {
+            console.log = function() {};
+            console.warn = function() {};
+            console.error = function() {};
+        }
     </script>
 </body>
 </html> 
