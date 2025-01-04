@@ -211,6 +211,8 @@ body {
     align-items: center;
     justify-content: center;
     background: #111111;
+    margin: 0;
+    padding: 0;
 }
     
 .video-background {
@@ -222,18 +224,22 @@ body {
     z-index: 1;
     pointer-events: none;
     overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 .video-background video {
     position: absolute;
-    top: 50%;
+    top: 60%;
     left: 50%;
     min-width: 100%;
-    min-height: 100%;
+    min-height: 120vh;
     width: auto;
     height: auto;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(1.2);
     object-fit: cover;
+    margin: 0;
+    padding: 0;
 }
 
 .video-background::after {
@@ -529,6 +535,8 @@ body {
     position: relative;
     z-index: 3;
     text-align: center;
+    margin: 0;
+    padding: 0;
     animation: fadeInUp 1.5s ease-out;
 }
 
