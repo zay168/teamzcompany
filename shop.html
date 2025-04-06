@@ -61,7 +61,7 @@
                 <h3>Développement Web</h3>
                 <p>Création de sites web modernes et responsifs avec des designs uniques et des animations personnalisées.</p>
                 <div class="price">À partir de 90€</div>
-                <a href="templates.html"><button class="service-btn">En savoir plus</button></a>
+                <button class="service-btn">En savoir plus</button>
             </div>
             <div class="service-card" data-tilt>
                 <div class="service-icon">🎨</div>
@@ -85,14 +85,14 @@
         <div class="products-grid">
             <div class="product-card" data-tilt>
                 <div class="product-image coming-soon">
-                    <span>Bientôt disponible</span>
+                    <span class="coming-soon-trigger">Bientôt disponible</span>
                 </div>
                 <h3>TEAMZ Merch</h3>
                 <p>Collection exclusive de vêtements et accessoires TEAMZ.</p>
             </div>
             <div class="product-card" data-tilt>
                 <div class="product-image coming-soon">
-                    <span>Bientôt disponible</span>
+                    <span class="coming-soon-trigger">Bientôt disponible</span>
                 </div>
                 <h3>Templates Premium</h3>
                 <p>Templates professionnels pour vos projets web et vidéo.</p>
@@ -170,7 +170,6 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/adblock-detect@1.0.0/dist/adblock-detect.min.js"></script>
     <script>
         // Initialisation de l'effet Tilt
         VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
@@ -299,92 +298,9 @@
         document.addEventListener('selectstart', function(e) {
             e.preventDefault();
         });
-
-        // Masquer le code source si quelqu'un essaie de l'afficher
-        if (window.console) {
-            console.log = function() {};
-            console.warn = function() {};
-            console.error = function() {};
-        }
-
-        // Configuration AdBlock
-        const adBlockConfig = {
-            blockedElements: [
-                '[id*="ad"]', 
-                '[class*="ad"]', 
-                '[id*="advertisement"]', 
-                '[class*="advertisement"]',
-                '[id*="banner"]', 
-                '[class*="banner"]',
-                '.yt-ad',
-                '.ytp-ad-overlay',
-                '.ytp-ad-skip-button',
-                '.ytp-ad-preview-container'
-            ],
-            blockedDomains: [
-                'googlesyndication.com',
-                'doubleclick.net',
-                'adnxs.com',
-                'advertising.com'
-            ]
-        };
-
-        // Fonction de détection et de blocage des publicités
-        function detectAndBlockAds() {
-            // Vérifier si AdBlock est activé
-            if (window.adblockDetect && window.adblockDetect.isEnabled()) {
-                console.log('AdBlock est activé');
-                
-                // Supprimer les éléments publicitaires
-                adBlockConfig.blockedElements.forEach(selector => {
-                    const elements = document.querySelectorAll(selector);
-                    elements.forEach(el => el.remove());
-                });
-
-                // Bloquer les requêtes vers des domaines publicitaires
-                const originalFetch = window.fetch;
-                window.fetch = function(input, init) {
-                    if (typeof input === 'string') {
-                        const url = new URL(input);
-                        if (adBlockConfig.blockedDomains.some(domain => url.hostname.includes(domain))) {
-                            return Promise.reject(new Error('Publicité bloquée'));
-                        }
-                    }
-                    return originalFetch.apply(this, arguments);
-                };
-
-                // Modifier le lecteur YouTube
-                if (window.YT && window.YT.Player) {
-                    const originalPlayer = window.YT.Player;
-                    window.YT.Player = function(id, options) {
-                        if (options && options.playerVars) {
-                            // Paramètres pour minimiser les publicités
-                            options.playerVars.autoplay = 1;
-                            options.playerVars.controls = 0;
-                            options.playerVars.modestbranding = 1;
-                            options.playerVars.rel = 0;
-                            options.playerVars.showinfo = 0;
-                        }
-                        return new originalPlayer(id, options);
-                    };
-                }
-            } else {
-                console.log('AdBlock non détecté');
-            }
-        }
-
-        // Exécuter la détection et le blocage
-        window.addEventListener('load', detectAndBlockAds);
-
-        // Vérification périodique
-        setInterval(detectAndBlockAds, 1000);
-
-        // Observateur de mutations
-        const observer = new MutationObserver(detectAndBlockAds);
-        observer.observe(document.body, { 
-            childList: true, 
-            subtree: true 
-        });
     </script>
+    <script src="scripts/global.js" defer></script>
+    <!-- Stranger Things Easter Egg Trigger -->
+    <div id="upside-down-trigger" title="Une faille dans le monde à l'envers ?"></div>
 </body>
 </html> 

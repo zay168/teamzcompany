@@ -80,19 +80,8 @@
     color: #ffffff;
 }
 
-[data-theme="light"] .hero::after {
-    background: linear-gradient(
-        to bottom,
-        transparent,
-        #ffffff
-    );
-}
-
-[data-theme="light"] .video-background::after {
-    background: linear-gradient(
-        rgba(255, 255, 255, 0.8),
-        rgba(255, 255, 255, 0.7)
-    );
+[data-theme="light"] .hero {
+    background: #ffffff;
 }
 
 /* Ajustements pour le thème clair */
@@ -143,6 +132,36 @@ body {
     line-height: 1.6;
     color: var(--text-light);
     background: var(--background);
+}
+
+/* Konami Code Easter Egg Effect */
+body.konami-active {
+    animation: konami-glitch 0.5s infinite alternate;
+    filter: sepia(0.5) hue-rotate(150deg) contrast(1.2) saturate(1.5);
+    transition: filter 0.5s ease-in-out; /* Transition douce */
+}
+
+@keyframes konami-glitch {
+    0% {
+        transform: translate(0, 0);
+        filter: sepia(0.5) hue-rotate(150deg) contrast(1.2) saturate(1.5);
+    }
+    25% {
+        transform: translate(2px, -2px);
+        filter: sepia(0.6) hue-rotate(160deg) contrast(1.3) saturate(1.6);
+    }
+    50% {
+        transform: translate(-2px, 2px);
+        filter: sepia(0.4) hue-rotate(140deg) contrast(1.1) saturate(1.4);
+    }
+    75% {
+        transform: translate(1px, -1px);
+        filter: sepia(0.55) hue-rotate(155deg) contrast(1.25) saturate(1.55);
+    }
+    100% {
+        transform: translate(0, 0);
+        filter: sepia(0.5) hue-rotate(150deg) contrast(1.2) saturate(1.5);
+    }
 }
 
 /* Navigation */
@@ -213,72 +232,6 @@ body {
     background: #111111;
     margin: 0;
     padding: 0;
-}
-    
-.video-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-}
-
-.video-background video {
-    position: absolute;
-    top: 60%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 120vh;
-    width: auto;
-    height: auto;
-    transform: translate(-50%, -50%) scale(1.2);
-    object-fit: cover;
-    margin: 0;
-    padding: 0;
-}
-
-.video-background::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        rgba(0, 0, 0, 0.6),
-        rgba(0, 0, 0, 0.4)
-    );
-    z-index: 2;
-}
-
-#youtube-player {
-    position: absolute;
-    top: 60%;
-    left: 50%;
-    width: 100vw;
-    height: 120vh; /* Augmentation de la hauteur pour un meilleur cadrage */
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    object-fit: cover;
-}
-
-@media (min-aspect-ratio: 16/9) {
-    #youtube-player {
-        height: 120vh; /* Maintien de la hauteur supplémentaire */
-        top: 60%;
-    }
-}
-
-@media (max-aspect-ratio: 16/9) {
-    #youtube-player {
-        width: 177.78vh;
-        top: 60%;
-    }
 }
 
 /* Animation de chargement */
@@ -715,37 +668,6 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Ajout du dégradé de transition */
-.hero::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 150px;
-    background: linear-gradient(
-        to bottom,
-        transparent,
-        #111111
-    );
-    z-index: 1;
-    pointer-events: none;
-}
-
-/* Ajustement de la section features */
-.features {
-    position: relative;
-    z-index: 2;
-    margin-top: -2px;
-    padding-top: 120px;
-    background: #111111;
-}
-
-/* Suppression du séparateur de features qui n'est plus nécessaire */
-.features::before {
-    display: none;
-}
-
 /* Menu Burger */
 .burger-menu {
     display: none;
@@ -1057,6 +979,9 @@ html {
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: transform 0.3s ease;
+    opacity: 0;
+    transform: translateY(30px) scale(0);
+    transform-origin: center center;
 }
 
 .style-icon:hover {
@@ -1693,3 +1618,360 @@ body {
 [data-theme="light"] .close-modal {
     color: var(--text-secondary);
 }
+
+/* Coming Soon Easter Egg */
+.coming-soon-trigger {
+    position: relative; /* Nécessaire pour positionner la tooltip */
+    cursor: pointer; /* Indique qu'on peut cliquer */
+}
+
+.coming-soon-trigger.shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.cs-tooltip {
+    position: absolute;
+    bottom: 110%; /* Au-dessus de l'élément */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--accent-color, #0ff);
+    color: var(--background-color, #111);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 10;
+}
+
+.cs-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Crée une petite flèche pour la tooltip */
+.cs-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--accent-color, #0ff) transparent transparent transparent;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
+/* Logo Animation Easter Egg */
+.logo.logo-animate a {
+    animation: logo-spin 0.6s ease-in-out;
+    display: inline-block; /* Nécessaire pour que transform fonctionne correctement */
+}
+
+@keyframes logo-spin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(360deg) scale(1.2); }
+    100% { transform: rotate(360deg) scale(1); } /* Termine à 360 pour éviter le "retour" */
+}
+
+/* Matrix Easter Egg */
+#matrix-intro-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000; /* Fond noir opaque */
+    display: none; /* Caché par défaut */
+    z-index: 9997; /* Juste en dessous du key-feedback, au-dessus du canvas */
+    align-items: center;
+    justify-content: center;
+}
+
+body.matrix-intro-active #matrix-intro-container {
+    display: flex; /* Utiliser flex pour centrer */
+}
+
+#matrix-intro-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 6rem; /* Ou ajuster selon préférence */
+    color: #0F0;
+    text-shadow: 0 0 10px #0F0;
+    white-space: pre; /* Important pour l'effet typing */
+    text-align: center;
+    opacity: 1;
+    transform: scale(1);
+    transition: transform 1s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.8s ease-out; /* Transition pour le zoom */
+}
+
+#matrix-intro-text.zoom-in {
+    transform: scale(20); /* Zoom important */
+    opacity: 0; /* Disparaît pendant le zoom */
+}
+
+#matrix-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none; /* Caché par défaut */
+    z-index: 9990; /* En dessous de l'intro */
+    /* background-color: rgba(0, 0, 0, 0.9); Supprimé, géré par l'intro */
+    opacity: 1; /* Opacité initiale */
+    transition: opacity 0.5s ease-out; /* Transition pour le fondu */
+}
+
+#matrix-canvas.fade-out {
+    opacity: 0;
+}
+
+body.matrix-active #matrix-canvas {
+    display: block; /* Affiché quand actif */
+}
+
+/* Optionnel: Estomper légèrement le contenu principal derrière */
+/* body.matrix-active > *:not(#matrix-canvas):not(.loading-overlay) {
+    opacity: 0.5;
+    transition: opacity 0.5s ease;
+} */
+
+/* Style pour le feedback des touches (Matrix) */
+#key-feedback {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 5rem; /* Grande taille */
+    font-family: 'Courier New', Courier, monospace;
+    color: #0F0; /* Vert Matrix */
+    font-weight: bold;
+    text-shadow: 0 0 10px #0F0, 0 0 20px #0F0;
+    z-index: 9998; /* Au-dessus de Matrix, en dessous du loader/menu */
+    pointer-events: none; /* Ne pas interférer avec les clics */
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+
+#key-feedback.show {
+    opacity: 1;
+}
+
+/* Keyframes for flicker */
+@keyframes golden-m-flicker {
+  0%, 100% { opacity: 1; }
+  20% { opacity: 0.6; }
+  40% { opacity: 1; }
+  60% { opacity: 0.7; }
+  80% { opacity: 1; }
+}
+
+/* Style pour le M doré (Matrix Prélude) */
+/* Cibler spécifiquement le span dans le h1 pour ne pas affecter les pseudo-éléments du glitch */
+h1.glitch span.golden-m.golden-m-active {
+    /* Utiliser un dégradé pour un effet doré */
+    background: linear-gradient(145deg, #FFD700, #FFA500, #FFD700);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* Annuler l'ombre du glitch SEULEMENT sur cette lettre */
+    text-shadow: none;
+    /* Important: Rétablir l'opacité si le glitch l'affectait - Géré par l'animation maintenant */
+    /* opacity: 1; */ 
+    /* Transition douce (pour l'apparition/disparition de la couleur initiale) */
+    transition: color 0.2s ease-in-out, background 0.2s ease-in-out;
+    /* Ajouter le clignotement */
+    display: inline-block; /* Garder au cas où */
+    animation: golden-m-flicker 0.5s linear infinite; /* Clignotement */
+}
+
+/* Hacking Glitch Easter Egg */
+.settings-btn {
+    position: relative; /* Pour positionner les pseudo-éléments */
+    overflow: hidden; /* Cacher le débordement des glitches */
+}
+
+.settings-btn.hacking-glitch-active::before,
+.settings-btn.hacking-glitch-active::after {
+    content: attr(data-glitch-text); /* Contenu généré par JS */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--nav-bg); /* Cache le texte original */
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    overflow: hidden;
+    white-space: pre;
+    clip-path: inset(0); /* Pour l'animation */
+}
+
+.settings-btn.hacking-glitch-active::before {
+    color: #0f0; /* Vert */
+    text-shadow: -1px 0 red;
+    animation: glitch-anim-1 0.1s linear infinite alternate-reverse;
+}
+
+.settings-btn.hacking-glitch-active::after {
+    color: red; /* Rouge */
+    text-shadow: 1px 0 #0f0;
+    animation: glitch-anim-2 0.08s linear infinite alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+    0% { clip-path: inset(25% 0 60% 0); transform: translate(-1px, 0px);}
+    100% { clip-path: inset(45% 0 20% 0); transform: translate(1px, 0px); }
+}
+
+@keyframes glitch-anim-2 {
+     0% { clip-path: inset(55% 0 10% 0); transform: translate(1px, 0px);}
+    100% { clip-path: inset(15% 0 70% 0); transform: translate(-1px, 0px); }
+}
+
+/* Stranger Things Easter Egg */
+#upside-down-trigger {
+    position: fixed; 
+    bottom: 20px; 
+    right: 20px; 
+    width: 15px;
+    height: 15px;
+    background: radial-gradient(circle, rgba(255,77,77,0.5) 0%, rgba(0,0,0,0.8) 70%);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 100; 
+    box-shadow: 0 0 10px rgba(255,77,77,0.7);
+    opacity: 0.7;
+    transition: transform 0.3s, opacity 0.3s, box-shadow 0.3s;
+    display: none; /* Caché par défaut */
+}
+
+/* Afficher seulement en thème clair */
+html[data-theme="light"] #upside-down-trigger {
+    display: block;
+}
+
+/* Appliquer le hover seulement en thème clair */
+html[data-theme="light"] #upside-down-trigger:hover {
+    transform: scale(1.2);
+    opacity: 1;
+    box-shadow: 0 0 15px rgba(255,77,77,1);
+}
+
+body.upside-down-active {
+    animation: upside-down-bg 1s infinite alternate;
+}
+
+/* Appliquer les filtres à tous les éléments sauf l'overlay de chargement et l'easter egg lui-même */
+body.upside-down-active > *:not(.loading-overlay):not(#upside-down-trigger):not(.spore) {
+    filter: invert(1) hue-rotate(180deg) saturate(0.8) brightness(0.9) contrast(1.1);
+    transition: filter 0.5s ease-in-out;
+}
+
+/* Empêcher les filtres sur les éléments déjà filtrés (ex: Konami) ou fixes */
+body.upside-down-active.konami-active > *,
+body.upside-down-active .nav-blur {
+    filter: none; /* Annuler si un autre filtre est actif */
+}
+
+@keyframes upside-down-bg {
+    from { background-color: #100808; }
+    to { background-color: #050000; }
+}
+
+.spore {
+    position: fixed;
+    width: 5px;
+    height: 5px;
+    background-color: rgba(200, 200, 220, 0.4); /* Blanc cassé légèrement transparent */
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999; /* Au-dessus de tout */
+    opacity: 0;
+    box-shadow: 0 0 5px rgba(200, 200, 220, 0.6);
+    animation: float-spore 5s linear infinite, fade-in-spore 1s ease-out forwards;
+}
+
+@keyframes float-spore {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(5px, -10px); }
+    50% { transform: translate(-5px, -20px); }
+    75% { transform: translate(3px, -30px); }
+    100% { transform: translate(0, -40px); opacity: 0; }
+}
+
+@keyframes fade-in-spore {
+    from { opacity: 0; }
+    to { opacity: 0.6; }
+}
+
+/* Fin Stranger Things Easter Egg */
+
+/* Cacher le curseur par défaut sur la page About */
+#about-page,
+#about-page * { /* Cible tous les éléments de la page */
+    cursor: none;
+}
+
+/* On pourrait vouloir restaurer le curseur sur certains éléments si nécessaire */
+/* Par exemple, sur les inputs ou textareas s'il y en avait */
+/* #about-page input,
+#about-page textarea {
+    cursor: text;
+} */
+
+/* Styles généraux pour les liens, etc. */
+
+/* Stranger Things Easter Egg - Intro Cinématique */
+
+@keyframes trigger-pulse {
+    0% { transform: scale(1); box-shadow: 0 0 10px rgba(255,77,77,0.7); }
+    50% { transform: scale(1.5); box-shadow: 0 0 25px rgba(255,77,77,1); }
+    100% { transform: scale(1); box-shadow: 0 0 10px rgba(255,77,77,0.7); }
+}
+
+/* Appliquer l'animation au trigger pendant l'intro */
+#upside-down-trigger.intro-active {
+    animation: trigger-pulse 0.8s ease-in-out 3; /* Jouer 3 fois */
+}
+
+#upside-down-intro {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(10,0,0,0.8) 0%, rgba(0,0,0,1) 70%);
+    z-index: 9998; /* Sous le feedback de touches, au-dessus de tout le reste */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease-in;
+}
+
+#upside-down-intro.show {
+    animation: intro-pulse-fade 3s ease-in-out forwards; /* Durée de l'intro */
+}
+
+@keyframes intro-pulse-fade {
+    0% { background: radial-gradient(ellipse at center, rgba(50,0,0,0.8) 0%, rgba(0,0,0,1) 70%); opacity: 0.5; }
+    50% { background: radial-gradient(ellipse at center, rgba(100,10,10,0.9) 0%, rgba(10,0,0,1) 70%); opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; } /* Disparaît à la fin */
+}
+
+/* Ajuster les spores pour apparaître après l'intro */
+body.upside-down-active .spore {
+    /* Le style de base reste le même, mais l'apparition dépend de upside-down-active */
+    /* L'animation fade-in-spore gère l'apparition */
+}
+
+/* Fin Styles Intro */

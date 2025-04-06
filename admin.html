@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤫 Zone Secrète - TEAMZ</title>
+    <link rel="icon" type="image/png" href="assets/icons/logo.png">
+    <link rel="stylesheet" href="styles/main.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            background-color: var(--background-color, #111);
+            color: var(--text-color, #fff);
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+        }
+        .secret-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        h1 {
+            color: var(--accent-color, #0ff);
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+        p {
+            max-width: 400px;
+            margin-bottom: 30px;
+        }
+        a {
+            color: var(--accent-color, #0ff);
+            text-decoration: none;
+            border: 1px solid var(--accent-color, #0ff);
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        a:hover {
+            background-color: var(--accent-color, #0ff);
+            color: var(--background-color, #111);
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="secret-icon">🤫</div>
+    
+    <h1>Zone Secrète Découverte !</h1>
+    
+    <p>Félicitations, détective du web ! Vous avez trouvé l'easter egg. 😉<br>Rien d'ultra secret ici, mais chut... c'est notre petit jardin secret.</p>
+
+    <a href="index.html">Retourner à la lumière</a>
+
+    <script src="scripts/global.js" defer></script>
+    <!-- Stranger Things Easter Egg Trigger -->
+    <div id="upside-down-trigger" title="Une faille ?"></div>
+</body>
+</html> 

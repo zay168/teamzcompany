@@ -10,7 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
-<body>
+<body id="about-page">
     <nav class="nav-blur">
         <div class="logo"><a href="index.html">TEAMZ</a></div>
         <div class="burger-menu">
@@ -87,7 +87,7 @@
                 <div class="about-card vision-card" data-tilt>
                     <div class="card-decoration"></div>
                     <h2>Ma Vision</h2>
-                    <div class="vision-quote">" La créativité n'a pas de limites "</div>
+                    <div class="vision-quote" id="vision-quote-trigger">" La créativité n'a pas de limites "</div>
                     <p>Je m'efforce également de développer des projets innovants, que ce soit pour ma chaîne YouTube ou pour d'autres initiatives. Avec une passion inébranlable pour le code et une envie constante d'apprendre, je souhaite partager cette aventure avec vous.</p>
                 </div>
             </div>
@@ -95,7 +95,6 @@
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/adblock-detect@1.0.0/dist/adblock-detect.min.js"></script>
     <script>
         // Initialisation de l'effet Tilt
         VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
@@ -186,15 +185,18 @@
         });
 
         // Animation des icônes de style
-        gsap.from('.style-icon', {
-            scale: 0,
-            rotation: 360,
-            opacity: 0,
-            duration: 0.8,
-            stagger: 0.2,
+        gsap.to('.style-icon', {
+            scale: 1,
+            rotation: 0,
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            stagger: 0.3,
+            ease: "expo.out",
             scrollTrigger: {
                 trigger: '.style-card',
-                start: 'top 70%'
+                start: 'top 75%',
+                toggleActions: "play pause resume reset"
             }
         });
 
@@ -254,91 +256,89 @@
             e.preventDefault();
         });
 
-        // Masquer le code source si quelqu'un essaie de l'afficher
-        if (window.console) {
-            console.log = function() {};
-            console.warn = function() {};
-            console.error = function() {};
-        }
+        // === Début du script d'accès admin ===
+        const visionQuoteTrigger = document.getElementById('vision-quote-trigger');
+        if (visionQuoteTrigger) {
+            let clickCount = 0;
+            let clickTimer = null;
+            const tripleClickThreshold = 500; // Temps max entre les clics (ms)
 
-        // Configuration AdBlock
-        const adBlockConfig = {
-            blockedElements: [
-                '[id*="ad"]', 
-                '[class*="ad"]', 
-                '[id*="advertisement"]', 
-                '[class*="advertisement"]',
-                '[id*="banner"]', 
-                '[class*="banner"]',
-                '.yt-ad',
-                '.ytp-ad-overlay',
-                '.ytp-ad-skip-button',
-                '.ytp-ad-preview-container'
-            ],
-            blockedDomains: [
-                'googlesyndication.com',
-                'doubleclick.net',
-                'adnxs.com',
-                'advertising.com'
-            ]
-        };
+            visionQuoteTrigger.addEventListener('click', () => {
+                clickCount++;
 
-        // Fonction de détection et de blocage des publicités
-        function detectAndBlockAds() {
-            // Vérifier si AdBlock est activé
-            if (window.adblockDetect && window.adblockDetect.isEnabled()) {
-                console.log('AdBlock est activé');
-                
-                // Supprimer les éléments publicitaires
-                adBlockConfig.blockedElements.forEach(selector => {
-                    const elements = document.querySelectorAll(selector);
-                    elements.forEach(el => el.remove());
-                });
-
-                // Bloquer les requêtes vers des domaines publicitaires
-                const originalFetch = window.fetch;
-                window.fetch = function(input, init) {
-                    if (typeof input === 'string') {
-                        const url = new URL(input);
-                        if (adBlockConfig.blockedDomains.some(domain => url.hostname.includes(domain))) {
-                            return Promise.reject(new Error('Publicité bloquée'));
-                        }
-                    }
-                    return originalFetch.apply(this, arguments);
-                };
-
-                // Modifier le lecteur YouTube
-                if (window.YT && window.YT.Player) {
-                    const originalPlayer = window.YT.Player;
-                    window.YT.Player = function(id, options) {
-                        if (options && options.playerVars) {
-                            // Paramètres pour minimiser les publicités
-                            options.playerVars.autoplay = 1;
-                            options.playerVars.controls = 0;
-                            options.playerVars.modestbranding = 1;
-                            options.playerVars.rel = 0;
-                            options.playerVars.showinfo = 0;
-                        }
-                        return new originalPlayer(id, options);
-                    };
+                if (clickCount === 1) {
+                    // Démarre un timer au premier clic
+                    clickTimer = setTimeout(() => {
+                        clickCount = 0; // Réinitialise si trop lent
+                    }, tripleClickThreshold);
+                } else if (clickCount === 3) {
+                    // Triple clic détecté
+                    clearTimeout(clickTimer); // Annule le timer
+                    clickCount = 0; // Réinitialise le compteur
+                    showAdminAccessInput(visionQuoteTrigger);
                 }
-            } else {
-                console.log('AdBlock non détecté');
-            }
+            });
         }
 
-        // Exécuter la détection et le blocage
-        window.addEventListener('load', detectAndBlockAds);
+        function showAdminAccessInput(triggerElement) {
+            // Vérifie si l'input existe déjà
+            let existingInput = document.getElementById('admin-access-input');
+            if (existingInput) {
+                existingInput.focus();
+                return;
+            }
 
-        // Vérification périodique
-        setInterval(detectAndBlockAds, 1000);
+            const input = document.createElement('input');
+            input.setAttribute('type', 'text');
+            input.setAttribute('id', 'admin-access-input');
+            input.setAttribute('placeholder', 'Code...');
+            // Style basique (peut être amélioré dans le CSS)
+            input.style.position = 'absolute';
+            // Positionne l'input sous l'élément déclencheur
+            input.style.top = (triggerElement.offsetTop + triggerElement.offsetHeight + 8) + 'px'; 
+            input.style.left = triggerElement.offsetLeft + 'px';
+            input.style.padding = '8px';
+            input.style.border = '1px solid var(--accent-color, #0ff)';
+            input.style.backgroundColor = 'var(--background-color, #111)';
+            input.style.color = 'var(--text-color, #fff)';
+            input.style.zIndex = '1001'; // Assure qu'il est au-dessus
+            input.style.fontFamily = 'inherit';
+            input.style.borderRadius = '4px';
 
-        // Observateur de mutations
-        const observer = new MutationObserver(detectAndBlockAds);
-        observer.observe(document.body, { 
-            childList: true, 
-            subtree: true 
-        });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    if (input.value.trim().toLowerCase() === 'access admin') {
+                        window.location.href = 'admin.html'; // Redirection
+                    } else {
+                        // Optionnel: Feedback si code incorrect
+                        input.style.borderColor = 'red';
+                        setTimeout(() => input.remove(), 800); // Enlève après un court délai
+                    }
+                } else {
+                     input.style.borderColor = 'var(--accent-color, #0ff)'; // Réinitialise la bordure en cas de correction
+                }
+            });
+
+            // Ferme l'input si on clique ailleurs
+             input.addEventListener('blur', () => {
+                 // Léger délai pour permettre la redirection si Enter est pressé juste avant le blur
+                 setTimeout(() => {
+                     // Ne pas supprimer si la raison du blur est la redirection
+                     if (document.activeElement !== input && !window.location.href.endsWith('admin.html')) {
+                          input.remove();
+                     }
+                 }, 150);
+            });
+
+            // Ajoute l'input au parent de l'élément déclencheur (la carte)
+            triggerElement.parentNode.style.position = 'relative'; // Assure que le positionnement absolu de l'input fonctionne bien
+            triggerElement.parentNode.appendChild(input);
+            input.focus(); // Met le focus sur l'input
+        }
+        // === Fin du script d'accès admin ===
     </script>
+    <script src="scripts/global.js" defer></script>
+    <!-- Stranger Things Easter Egg Trigger -->
+    <div id="upside-down-trigger" title="Une faille dans le monde à l'envers ?"></div>
 </body>
 </html> 

@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/adblock-detect@1.0.0/dist/adblock-detect.min.js"></script>
     <style>
         /* Spinner de chargement */
         .loading-overlay {
@@ -393,6 +392,9 @@
         </div>
     </section>
 
+    <!-- Stranger Things Easter Egg Trigger -->
+    <div id="upside-down-trigger" title="Une faille dans le monde à l'envers ?"></div>
+
     <script>
         (function() {
             const TEMPLATE_ID = "template_hqsf23x";
@@ -623,94 +625,6 @@
         document.addEventListener('selectstart', function(e) {
             e.preventDefault();
         });
-
-        // Masquer le code source si quelqu'un essaie de l'afficher
-        if (window.console) {
-            console.log = function() {};
-            console.warn = function() {};
-            console.error = function() {};
-        }
-    </script>
-
-    <script>
-        // Configuration AdBlock
-        const adBlockConfig = {
-            blockedElements: [
-                '[id*="ad"]', 
-                '[class*="ad"]', 
-                '[id*="advertisement"]', 
-                '[class*="advertisement"]',
-                '[id*="banner"]', 
-                '[class*="banner"]',
-                '.yt-ad',
-                '.ytp-ad-overlay',
-                '.ytp-ad-skip-button',
-                '.ytp-ad-preview-container'
-            ],
-            blockedDomains: [
-                'googlesyndication.com',
-                'doubleclick.net',
-                'adnxs.com',
-                'advertising.com'
-            ]
-        };
-
-        // Fonction de détection et de blocage des publicités
-        function detectAndBlockAds() {
-            // Vérifier si AdBlock est activé
-            if (window.adblockDetect && window.adblockDetect.isEnabled()) {
-                console.log('AdBlock est activé');
-                
-                // Supprimer les éléments publicitaires
-                adBlockConfig.blockedElements.forEach(selector => {
-                    const elements = document.querySelectorAll(selector);
-                    elements.forEach(el => el.remove());
-                });
-
-                // Bloquer les requêtes vers des domaines publicitaires
-                const originalFetch = window.fetch;
-                window.fetch = function(input, init) {
-                    if (typeof input === 'string') {
-                        const url = new URL(input);
-                        if (adBlockConfig.blockedDomains.some(domain => url.hostname.includes(domain))) {
-                            return Promise.reject(new Error('Publicité bloquée'));
-                        }
-                    }
-                    return originalFetch.apply(this, arguments);
-                };
-
-                // Modifier le lecteur YouTube
-                if (window.YT && window.YT.Player) {
-                    const originalPlayer = window.YT.Player;
-                    window.YT.Player = function(id, options) {
-                        if (options && options.playerVars) {
-                            // Paramètres pour minimiser les publicités
-                            options.playerVars.autoplay = 1;
-                            options.playerVars.controls = 0;
-                            options.playerVars.modestbranding = 1;
-                            options.playerVars.rel = 0;
-                            options.playerVars.showinfo = 0;
-                        }
-                        return new originalPlayer(id, options);
-                    };
-                }
-            } else {
-                console.log('AdBlock non détecté');
-            }
-        }
-
-        // Exécuter la détection et le blocage
-        window.addEventListener('load', detectAndBlockAds);
-
-        // Vérification périodique
-        setInterval(detectAndBlockAds, 1000);
-
-        // Observateur de mutations
-        const observer = new MutationObserver(detectAndBlockAds);
-        observer.observe(document.body, { 
-            childList: true, 
-            subtree: true 
-        });
     </script>
 
     <script>
@@ -721,9 +635,11 @@
                 loadingOverlay.classList.add('hidden');
                 setTimeout(() => {
                     loadingOverlay.style.display = 'none';
-                }, 500);
-            }, 1500); // Affiche le spinner pendant 1.5 secondes
+                }, 500); // Durée du fondu (0.5s)
+            }, 500); // Délai initial réduit à 0.5s
         });
     </script>
+
+    <script src="scripts/global.js" defer></script>
 </body>
 </html>
