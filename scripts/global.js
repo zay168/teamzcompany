@@ -601,3 +601,794 @@ if (upsideDownTrigger) {
     }
 }
 // === Fin Stranger Things Upside Down Easter Egg === 
+
+// === Simulated CLI Easter Egg ===
+let cliContainer = null;
+let cliOutput = null;
+let cliInput = null;
+let isCliActive = false;
+const cliHistory = [];
+let cliHistoryIndex = -1;
+
+document.addEventListener('keydown', (e) => {
+    // Détecter Ctrl + Alt + T
+    if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 't') {
+        e.preventDefault(); 
+        toggleCli();
+    }
+    // Gérer flèche haut/bas dans l'input pour l'historique
+    if (isCliActive && document.activeElement === cliInput) {
+        if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            navigateCliHistory(1); // 1 pour monter (plus ancien)
+        } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            navigateCliHistory(-1); // -1 pour descendre (plus récent)
+        }
+    }
+});
+
+function toggleCli() {
+    if (!cliContainer) {
+        createCliInterface();
+    }
+    
+    if (isCliActive) {
+        document.body.classList.remove('cli-active');
+        isCliActive = false;
+    } else {
+        document.body.classList.add('cli-active');
+        isCliActive = true;
+        cliInput.focus();
+        if (cliOutput.children.length === 0) { // Affiche le message de bienvenue si vide
+            displayCliMessage("Bienvenue dans le terminal TEAMZ Horizon.\nTapez 'help' pour la liste des commandes.");
+        }
+    }
+}
+
+function createCliInterface() {
+    cliContainer = document.createElement('div');
+    cliContainer.id = 'cli-container';
+    
+    cliOutput = document.createElement('div');
+    cliOutput.id = 'cli-output';
+    
+    const cliInputLine = document.createElement('div');
+    cliInputLine.id = 'cli-input-line';
+    
+    const cliPrompt = document.createElement('span');
+    cliPrompt.id = 'cli-prompt';
+    cliPrompt.textContent = 'TZH >';
+    
+    cliInput = document.createElement('input');
+    cliInput.id = 'cli-input';
+    cliInput.type = 'text';
+    cliInput.setAttribute('spellcheck', 'false');
+    
+    cliInputLine.appendChild(cliPrompt);
+    cliInputLine.appendChild(cliInput);
+    
+    cliContainer.appendChild(cliOutput);
+    cliContainer.appendChild(cliInputLine);
+    
+    document.body.appendChild(cliContainer);
+    
+    // Gérer la saisie (Entrée)
+    cliInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && cliInput.value.trim() !== '') {
+            const command = cliInput.value.trim();
+            cliInput.value = '';
+            processCliCommand(command);
+        }
+    });
+}
+
+function processCliCommand(command) {
+    // Ajoute la commande à l'historique
+    displayCliMessage(`<span class="cli-prompt-color">TZH ></span> ${command}`);
+    if (command.toLowerCase() !== cliHistory[cliHistory.length - 1]?.toLowerCase()) {
+        cliHistory.push(command);
+    }
+    cliHistoryIndex = -1; // Réinitialise l'index d'historique
+
+    const parts = command.toLowerCase().split(' ');
+    const cmd = parts[0];
+    const arg = parts[1];
+
+    switch (cmd) {
+        case 'help':
+            displayCliMessage(
+`Commandes disponibles :
+  help          - Affiche cette aide
+  nav <page>    - Navigue vers une page (home, about, shop)
+  clear         - Efface l'écran du terminal
+  eastereggs    - Liste les easter eggs connus
+  konami        - Active le code Konami
+  matrix        - Active l'effet Matrix
+  upside        - Active l'effet Upside Down (thème clair requis)
+  snake         - Lance le jeu Snake
+  retro         - Active/désactive le mode rétro
+  exit          - Ferme le terminal`
+            );
+            break;
+        case 'nav':
+            if (!arg) {
+                displayCliMessage("Usage: nav <page> (home, about, shop)", 'cli-error');
+            } else {
+                navigateToPage(arg);
+            }
+            break;
+        case 'clear':
+            cliOutput.innerHTML = '';
+            break;
+        case 'exit':
+            toggleCli();
+            break;
+        case 'eastereggs':
+            displayCliMessage(
+`Easter Eggs connus :
+ - Code Konami (↑↑↓↓←→←→BA)
+ - Accès Admin (Triple clic sur la citation dans 'À Propos')
+ - Impatience Bientôt Dispo (Multi-clic sur 'Bientôt disponible')
+ - Logo Animé (Multi-clic sur le logo)
+ - Message Console (Ouvrez la console Dev)
+ - Effet Matrix (Ctrl+Alt+M)
+ - Glitch Paramètres (Multi-clic sur ⚙️)
+ - Snake Game (Tapez S-N-A-K-E sur votre clavier)
+ - Mode Rétro (Tapez R-E-T-R-O sur votre clavier)
+ - Upside Down (Cliquez sur la faille en thème clair)`
+            ); 
+            break;
+        case 'konami':
+            document.body.classList.add('konami-active');
+            displayCliMessage("Code Konami activé !");
+            setTimeout(() => document.body.classList.remove('konami-active'), 5000);
+            break;
+        case 'matrix':
+             if (!document.body.classList.contains('matrix-intro-active') && 
+                 !document.body.classList.contains('matrix-active') && 
+                 !isMatrixIntroRunning) {
+                 startMatrixIntroAnimation();
+                 displayCliMessage("Séquence Matrix initiée...");
+             } else {
+                 displayCliMessage("Effet Matrix déjà en cours.", "cli-error");
+             }
+            break;
+         case 'upside':
+             if (document.documentElement.getAttribute('data-theme') === 'light') {
+                 if (!isUpsideDownActive) {
+                     startUpsideDownIntro();
+                     displayCliMessage("Ouverture de la faille...");
+                 } else {
+                     displayCliMessage("L'Upside Down est déjà actif.", "cli-error");
+                 }
+             } else {
+                 displayCliMessage("La faille ne s'ouvre qu'en thème clair.", "cli-error");
+             }
+            break;
+        case 'retro':
+            displayCliMessage(isRetroModeActive ? 
+                "Désactivation du mode rétro..." : 
+                "Activation du mode rétro..."
+            );
+            setTimeout(toggleRetroMode, 500);
+            break;
+        case 'snake':
+            displayCliMessage("Lancement du jeu Snake...");
+            // Correction: ne lance le jeu que lorsque la commande est validée par Enter
+            if (!isSnakeGameActive) {
+                setTimeout(() => {
+                    initSnakeGame();
+                }, 500);
+            } else {
+                displayCliMessage("Le jeu Snake est déjà actif.", "cli-error");
+            }
+            break;
+        default:
+            displayCliMessage(`Commande inconnue: ${cmd}`, 'cli-error');
+            break;
+    }
+}
+
+function navigateToPage(page) {
+    let url;
+    switch (page) {
+        case 'home': url = 'index.html'; break;
+        case 'about': url = 'about.html'; break;
+        case 'shop': url = 'shop.html'; break;
+        default:
+            displayCliMessage(`Page inconnue: ${page}`, 'cli-error');
+            return;
+    }
+    displayCliMessage(`Navigation vers ${page}...`);
+    // Petite pause avant la redirection pour voir le message
+    setTimeout(() => { window.location.href = url; }, 500);
+}
+
+function displayCliMessage(message, className = '') {
+    const messageElement = document.createElement('div');
+    if (className) {
+        messageElement.classList.add(className);
+    }
+    messageElement.innerHTML = message; // Utilise innerHTML pour interpréter les spans
+    cliOutput.appendChild(messageElement);
+    // Fait défiler vers le bas automatiquement
+    cliOutput.scrollTop = cliOutput.scrollHeight;
+}
+
+function navigateCliHistory(direction) {
+    const newIndex = cliHistoryIndex + direction;
+    
+    // Si on monte (direction 1) et qu'on est au bout de l'historique
+    if (direction === 1 && newIndex >= cliHistory.length) return;
+    // Si on descend (direction -1) et qu'on est revenu au début (ou avant)
+    if (direction === -1 && newIndex < -1) return;
+    
+    cliHistoryIndex = newIndex;
+    
+    if (cliHistoryIndex === -1) {
+        // Si on est revenu à -1 (en descendant), on efface le champ
+        cliInput.value = '';
+    } else {
+        cliInput.value = cliHistory[cliHistory.length - 1 - cliHistoryIndex];
+        // Déplacer le curseur à la fin
+        setTimeout(() => cliInput.selectionStart = cliInput.selectionEnd = cliInput.value.length, 0);
+    }
+}
+// === Fin Simulated CLI Easter Egg === 
+
+// === Snake Game Easter Egg ===
+let snakeGameContainer = null;
+let snakeCanvas = null;
+let snakeContext = null;
+let snakeKeysPressed = [];
+const snakeKeySequence = ['s', 'n', 'a', 'k', 'e'];
+let isSnakeGameActive = false;
+let snakeGameInterval = null;
+
+// Variables du jeu
+let snake = [];
+let food = {};
+let direction = 'right';
+let nextDirection = 'right';
+let gridSize = 20; // Taille de chaque cellule
+let gridWidth, gridHeight;
+let score = 0;
+let gameSpeed = 150; // Millisecondes entre chaque mise à jour
+
+// Ajouter une variable pour indiquer l'attente de redémarrage
+let isWaitingForRestart = false;
+
+// Modifier la gestion des touches dans l'écouteur principal pour inclure le cas du redémarrage
+document.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase();
+    
+    // Ne pas déclencher la séquence Snake si l'utilisateur est dans un champ de saisie
+    // comme le terminal CLI ou tout autre input/textarea
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        // Gérer uniquement le cas où l'input est déjà dans le jeu (redémarrage)
+        if (isSnakeGameActive && isWaitingForRestart && (e.key === ' ' || e.code === 'Space')) {
+            isWaitingForRestart = false;
+            resetSnakeGame();
+            snakeGameInterval = setInterval(updateSnakeGame, gameSpeed);
+        }
+        return; // Ne pas continuer le traitement pour la séquence S-N-A-K-E
+    }
+    
+    // Gérer le redémarrage du jeu si on est en attente après Game Over
+    if (isSnakeGameActive && isWaitingForRestart && (e.key === ' ' || e.code === 'Space')) {
+        isWaitingForRestart = false;
+        resetSnakeGame();
+        snakeGameInterval = setInterval(updateSnakeGame, gameSpeed);
+        return;
+    }
+    
+    // Ajouter la touche à la séquence et ne garder que les 5 dernières
+    snakeKeysPressed.push(key);
+    if (snakeKeysPressed.length > 5) {
+        snakeKeysPressed.shift();
+    }
+    
+    // Vérifier si la séquence complète est entrée (toutes les 5 lettres dans l'ordre)
+    const sequenceMatched = snakeKeysPressed.length === 5 && 
+                            snakeKeysPressed.every((k, i) => k === snakeKeySequence[i]);
+    
+    if (sequenceMatched && !isSnakeGameActive) {
+        initSnakeGame();
+    }
+    
+    // Contrôler le serpent quand le jeu est actif (et pas en attente de redémarrage)
+    if (isSnakeGameActive && !isWaitingForRestart) {
+        controlSnake(e.key);
+    }
+});
+
+function initSnakeGame() {
+    // Créer le conteneur du jeu s'il n'existe pas déjà
+    if (!snakeGameContainer) {
+        createSnakeGameInterface();
+    }
+    
+    // Initialiser ou réinitialiser le jeu
+    resetSnakeGame();
+    
+    // Afficher le jeu
+    snakeGameContainer.classList.add('active');
+    isSnakeGameActive = true;
+    
+    // Démarrer la boucle de jeu
+    snakeGameInterval = setInterval(updateSnakeGame, gameSpeed);
+}
+
+function createSnakeGameInterface() {
+    // Créer le conteneur principal
+    snakeGameContainer = document.createElement('div');
+    snakeGameContainer.id = 'snake-game-container';
+    
+    // Créer la modal
+    const modal = document.createElement('div');
+    modal.className = 'snake-game-modal';
+    
+    // Créer l'en-tête
+    const header = document.createElement('div');
+    header.className = 'snake-game-header';
+    
+    const title = document.createElement('h3');
+    title.className = 'snake-game-title';
+    title.textContent = 'TEAMZ SNAKE';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'snake-game-close';
+    closeBtn.textContent = '×';
+    closeBtn.addEventListener('click', closeSnakeGame);
+    
+    header.appendChild(title);
+    header.appendChild(closeBtn);
+    
+    // Créer le contenu
+    const content = document.createElement('div');
+    content.className = 'snake-game-content';
+    
+    snakeCanvas = document.createElement('canvas');
+    snakeCanvas.id = 'snake-canvas';
+    snakeCanvas.width = 400;
+    snakeCanvas.height = 400;
+    
+    const info = document.createElement('div');
+    info.className = 'snake-game-info';
+    
+    const scoreDiv = document.createElement('div');
+    scoreDiv.className = 'snake-game-score';
+    scoreDiv.textContent = 'Score: 0';
+    
+    const controlsDiv = document.createElement('div');
+    controlsDiv.className = 'snake-game-controls';
+    controlsDiv.textContent = 'Utilisez les flèches pour jouer';
+    
+    info.appendChild(scoreDiv);
+    info.appendChild(controlsDiv);
+    
+    content.appendChild(snakeCanvas);
+    content.appendChild(info);
+    
+    // Assembler les éléments
+    modal.appendChild(header);
+    modal.appendChild(content);
+    snakeGameContainer.appendChild(modal);
+    
+    // Ajouter à la page
+    document.body.appendChild(snakeGameContainer);
+    
+    // Initialiser le contexte de dessin
+    snakeContext = snakeCanvas.getContext('2d');
+    
+    // Calculer la taille de la grille
+    gridWidth = Math.floor(snakeCanvas.width / gridSize);
+    gridHeight = Math.floor(snakeCanvas.height / gridSize);
+}
+
+function resetSnakeGame() {
+    // Réinitialiser les variables du jeu
+    snake = [
+        {x: 5, y: Math.floor(gridHeight / 2)},
+        {x: 4, y: Math.floor(gridHeight / 2)},
+        {x: 3, y: Math.floor(gridHeight / 2)}
+    ];
+    
+    generateFood();
+    
+    direction = 'right';
+    nextDirection = 'right';
+    score = 0;
+    
+    // Mise à jour du score affiché
+    const scoreDiv = document.querySelector('.snake-game-score');
+    if (scoreDiv) {
+        scoreDiv.textContent = `Score: ${score}`;
+    }
+}
+
+function generateFood() {
+    // Générer de la nourriture à une position aléatoire
+    let newFood;
+    let foodOnSnake;
+    
+    do {
+        newFood = {
+            x: Math.floor(Math.random() * gridWidth),
+            y: Math.floor(Math.random() * gridHeight)
+        };
+        
+        // Vérifier si la nourriture est sur le serpent
+        foodOnSnake = snake.some(segment => 
+            segment.x === newFood.x && segment.y === newFood.y
+        );
+    } while (foodOnSnake);
+    
+    food = newFood;
+}
+
+function controlSnake(key) {
+    // Changer la direction en fonction des touches
+    switch (key) {
+        case 'ArrowUp':
+            if (direction !== 'down') nextDirection = 'up';
+            break;
+        case 'ArrowDown':
+            if (direction !== 'up') nextDirection = 'down';
+            break;
+        case 'ArrowLeft':
+            if (direction !== 'right') nextDirection = 'left';
+            break;
+        case 'ArrowRight':
+            if (direction !== 'left') nextDirection = 'right';
+            break;
+        case 'Escape':
+            closeSnakeGame();
+            break;
+    }
+}
+
+function updateSnakeGame() {
+    // Mettre à jour la direction
+    direction = nextDirection;
+    
+    // Calculer la nouvelle position de la tête
+    const head = {x: snake[0].x, y: snake[0].y};
+    
+    switch (direction) {
+        case 'up': head.y--; break;
+        case 'down': head.y++; break;
+        case 'left': head.x--; break;
+        case 'right': head.x++; break;
+    }
+    
+    // Vérifier la collision avec les bords
+    if (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight) {
+        gameOver();
+        return;
+    }
+    
+    // Vérifier la collision avec le serpent lui-même
+    if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+        gameOver();
+        return;
+    }
+    
+    // Ajouter la nouvelle tête
+    snake.unshift(head);
+    
+    // Vérifier si le serpent a mangé la nourriture
+    if (head.x === food.x && head.y === food.y) {
+        // Augmenter le score
+        score += 10;
+        
+        // Mise à jour de l'affichage du score
+        const scoreDiv = document.querySelector('.snake-game-score');
+        if (scoreDiv) {
+            scoreDiv.textContent = `Score: ${score}`;
+        }
+        
+        // Générer une nouvelle nourriture
+        generateFood();
+        
+        // Accélérer légèrement le jeu tous les 50 points
+        if (score % 50 === 0 && gameSpeed > 60) {
+            gameSpeed -= 10;
+            clearInterval(snakeGameInterval);
+            snakeGameInterval = setInterval(updateSnakeGame, gameSpeed);
+        }
+    } else {
+        // Si pas de nourriture mangée, retirer la queue
+        snake.pop();
+    }
+    
+    // Dessiner le jeu
+    drawSnakeGame();
+}
+
+function drawSnakeGame() {
+    // Effacer le canvas
+    snakeContext.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+    
+    // Dessiner la grille (optionnel)
+    snakeContext.strokeStyle = '#2a2a40';
+    for (let x = 0; x < gridWidth; x++) {
+        for (let y = 0; y < gridHeight; y++) {
+            snakeContext.strokeRect(x * gridSize, y * gridSize, gridSize, gridSize);
+        }
+    }
+    
+    // Dessiner la nourriture avec un effet brillant
+    snakeContext.fillStyle = '#ff00ff';
+    snakeContext.shadowBlur = 10;
+    snakeContext.shadowColor = '#ff00ff';
+    snakeContext.beginPath();
+    snakeContext.arc(
+        (food.x * gridSize) + (gridSize / 2),
+        (food.y * gridSize) + (gridSize / 2),
+        gridSize / 2,
+        0,
+        Math.PI * 2
+    );
+    snakeContext.fill();
+    
+    // Réinitialiser l'effet de lueur
+    snakeContext.shadowBlur = 0;
+    
+    // Dessiner le serpent
+    snake.forEach((segment, index) => {
+        // Dégradé de couleur pour le corps du serpent (cyan → bleu)
+        const hue = 180 + (index * 2);
+        snakeContext.fillStyle = `hsl(${hue}, 100%, 50%)`;
+        
+        // Tête légèrement plus grande
+        if (index === 0) {
+            snakeContext.shadowBlur = 15;
+            snakeContext.shadowColor = '#00ffff';
+            snakeContext.fillRect(
+                segment.x * gridSize,
+                segment.y * gridSize,
+                gridSize,
+                gridSize
+            );
+            snakeContext.shadowBlur = 0;
+        } else {
+            snakeContext.fillRect(
+                segment.x * gridSize,
+                segment.y * gridSize,
+                gridSize,
+                gridSize
+            );
+        }
+    });
+}
+
+function gameOver() {
+    clearInterval(snakeGameInterval);
+    
+    // Afficher "Game Over"
+    snakeContext.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    snakeContext.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+    
+    snakeContext.font = 'bold 24px "Courier New", monospace';
+    snakeContext.textAlign = 'center';
+    snakeContext.fillStyle = '#ff00ff';
+    snakeContext.shadowBlur = 10;
+    snakeContext.shadowColor = '#00ffff';
+    snakeContext.fillText('GAME OVER', snakeCanvas.width / 2, snakeCanvas.height / 2 - 10);
+    
+    snakeContext.font = '16px "Courier New", monospace';
+    snakeContext.fillStyle = '#ffffff';
+    snakeContext.shadowBlur = 0;
+    snakeContext.fillText(`Score: ${score}`, snakeCanvas.width / 2, snakeCanvas.height / 2 + 30);
+    snakeContext.fillText('Appuyez sur ESPACE pour rejouer', snakeCanvas.width / 2, snakeCanvas.height / 2 + 60);
+    
+    // Marquer le jeu comme prêt pour un redémarrage plutôt que d'utiliser un écouteur spécifique
+    // Cela évite les conflits avec les autres écouteurs keydown globaux
+    isWaitingForRestart = true;
+}
+
+function closeSnakeGame() {
+    // Arrêter le jeu
+    clearInterval(snakeGameInterval);
+    snakeGameInterval = null;
+    
+    // Cacher le jeu
+    if (snakeGameContainer) {
+        snakeGameContainer.classList.remove('active');
+    }
+    
+    isSnakeGameActive = false;
+}
+// === Fin Snake Game Easter Egg === 
+
+// === Retro Mode Easter Egg ===
+let isRetroModeActive = false;
+let retroKeyPressed = [];
+const retroKeySequence = ['r', 'e', 't', 'r', 'o'];
+let retroAudio = {
+    keypress: null,
+    startup: null,
+    shutdown: null,
+    beep: null
+};
+let retroSoundsLoaded = false;
+let retroNotification = null;
+let crtFrame = null;
+let retroLoader = null;
+let retroKeyHandler = null;
+
+// Détecter la séquence R-E-T-R-O
+document.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase();
+    
+    // Ne pas déclencher si l'utilisateur est dans un champ de saisie
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        if (isRetroModeActive && retroAudio.keypress && retroAudio.keypress.readyState >= 2) {
+            // Jouer le son de frappe si en mode rétro
+            const keySound = retroAudio.keypress.cloneNode();
+            keySound.volume = 0.2;
+            keySound.play().catch(err => console.error("Couldn't play keypress sound:", err));
+        }
+        return;
+    }
+    
+    // Ajouter la touche à la séquence et ne garder que les 5 dernières
+    retroKeyPressed.push(key);
+    if (retroKeyPressed.length > 5) {
+        retroKeyPressed.shift();
+    }
+    
+    // Vérifier si la séquence complète est entrée
+    const sequenceMatched = retroKeyPressed.length === 5 && 
+                           retroKeyPressed.every((k, i) => k === retroKeySequence[i]);
+    
+    if (sequenceMatched) {
+        toggleRetroMode();
+    }
+});
+
+// Initialiser les éléments nécessaires pour le mode rétro
+function initRetroMode() {
+    if (!retroSoundsLoaded) {
+        loadRetroSounds();
+    }
+    
+    // Créer le cadre CRT s'il n'existe pas déjà
+    if (!crtFrame) {
+        crtFrame = document.createElement('div');
+        crtFrame.className = 'crt-frame';
+        document.body.appendChild(crtFrame);
+    }
+    
+    // Créer la notification si elle n'existe pas déjà
+    if (!retroNotification) {
+        retroNotification = document.createElement('div');
+        retroNotification.className = 'retro-notification';
+        document.body.appendChild(retroNotification);
+    }
+    
+    // Créer le loader s'il n'existe pas déjà
+    if (!retroLoader) {
+        retroLoader = document.createElement('div');
+        retroLoader.className = 'retro-loader';
+        
+        const loaderText = document.createElement('div');
+        loaderText.className = 'retro-loader-text';
+        loaderText.textContent = 'Chargement du mode rétro';
+        
+        retroLoader.appendChild(loaderText);
+        document.body.appendChild(retroLoader);
+    }
+}
+
+// Charger les sons rétro
+function loadRetroSounds() {
+    // Créer et configurer les éléments audio
+    retroAudio.keypress = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-typewriter-hard-hit-1370.mp3'); // Remplacer par chemin réel
+    retroAudio.startup = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-classic-short-computer-startup-2860.mp3'); // Remplacer par chemin réel
+    retroAudio.shutdown = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-retro-game-notification-212.mp3'); // Remplacer par chemin réel
+    retroAudio.beep = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-arcade-retro-jump-223.mp3'); // Remplacer par chemin réel
+    
+    // Précharger les sons
+    for (const sound in retroAudio) {
+        if (retroAudio[sound]) {
+            retroAudio[sound].preload = 'auto';
+            retroAudio[sound].load();
+        }
+    }
+    
+    retroSoundsLoaded = true;
+}
+
+// Activer ou désactiver le mode rétro
+function toggleRetroMode() {
+    initRetroMode();
+    
+    if (isRetroModeActive) {
+        // Désactiver le mode rétro
+        disableRetroMode();
+    } else {
+        // Activer le mode rétro
+        enableRetroMode();
+    }
+}
+
+// Activer le mode rétro
+function enableRetroMode() {
+    // Montrer l'animation de chargement
+    retroLoader.classList.add('show');
+    
+    // Jouer le son de démarrage
+    if (retroAudio.startup && retroAudio.startup.readyState >= 2) {
+        retroAudio.startup.play().catch(err => console.error("Couldn't play startup sound:", err));
+    }
+    
+    // Simuler un temps de chargement
+    setTimeout(() => {
+        // Activer le mode
+        document.body.classList.add('retro-mode');
+        isRetroModeActive = true;
+        
+        // Cacher l'animation de chargement
+        retroLoader.classList.remove('show');
+        
+        // Afficher la notification
+        retroNotification.textContent = "MODE RÉTRO ACTIVÉ";
+        retroNotification.classList.add('show');
+        
+        // Jouer un bip de confirmation
+        if (retroAudio.beep && retroAudio.beep.readyState >= 2) {
+            retroAudio.beep.play().catch(err => console.error("Couldn't play beep sound:", err));
+        }
+        
+        // Cacher la notification après 3 secondes
+        setTimeout(() => {
+            retroNotification.classList.remove('show');
+        }, 3000);
+        
+        // Ajouter l'écouteur de clavier pour les sons de frappe
+        if (!retroKeyHandler) {
+            retroKeyHandler = function(e) {
+                if (isRetroModeActive && retroAudio.keypress && retroAudio.keypress.readyState >= 2 && 
+                    !e.ctrlKey && !e.altKey && !e.metaKey) { // Ignorer les touches modifiées
+                    const keySound = retroAudio.keypress.cloneNode();
+                    keySound.volume = 0.1; // Volume réduit pour ne pas être trop intrusif
+                    keySound.play().catch(err => {}); // Ignorer les erreurs (peut se produire si l'utilisateur n'a pas encore interagi)
+                }
+            };
+            document.addEventListener('keydown', retroKeyHandler);
+        }
+        
+    }, 1500); // Temps de "chargement" simulé
+}
+
+// Désactiver le mode rétro
+function disableRetroMode() {
+    // Jouer le son d'arrêt
+    if (retroAudio.shutdown && retroAudio.shutdown.readyState >= 2) {
+        retroAudio.shutdown.play().catch(err => console.error("Couldn't play shutdown sound:", err));
+    }
+    
+    // Mettre à jour la notification
+    retroNotification.textContent = "MODE RÉTRO DÉSACTIVÉ";
+    retroNotification.classList.add('show');
+    
+    // Désactiver le mode après une brève pause
+    setTimeout(() => {
+        document.body.classList.remove('retro-mode');
+        isRetroModeActive = false;
+        
+        // Cacher la notification
+        retroNotification.classList.remove('show');
+        
+    }, 1000);
+    
+    // Supprimer l'écouteur de clavier si présent
+    if (retroKeyHandler) {
+        document.removeEventListener('keydown', retroKeyHandler);
+        retroKeyHandler = null;
+    }
+}
+// === Fin Retro Mode Easter Egg === 
