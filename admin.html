@@ -18,6 +18,7 @@
             color: var(--text-color, #fff);
             font-family: 'Inter', sans-serif;
             text-align: center;
+            overflow: hidden;
         }
         .secret-icon {
             font-size: 4rem;
@@ -57,9 +58,20 @@
                 transform: translateY(-10px);
             }
         }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
+    <canvas id="particle-canvas"></canvas>
 
     <div class="secret-icon">🤫</div>
     
@@ -72,5 +84,184 @@
     <script src="scripts/global.js" defer></script>
     <!-- Stranger Things Easter Egg Trigger -->
     <div id="upside-down-trigger" title="Une faille ?"></div>
+
+    <script>
+        // Système de particules sur toute la page
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Redimensionner le canvas à la taille de la fenêtre
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Position de la souris pour l'interaction
+            let mouseX = canvas.width / 2;
+            let mouseY = canvas.height / 2;
+            let mouseIsMoving = false;
+            let mouseTimer;
+            
+            // Suivre la position de la souris pour l'interaction
+            document.addEventListener('mousemove', function(e) {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                mouseIsMoving = true;
+                
+                // Réinitialiser le timer pour détecter quand la souris s'arrête
+                clearTimeout(mouseTimer);
+                mouseTimer = setTimeout(() => {
+                    mouseIsMoving = false;
+                }, 100);
+            });
+            
+            // Classe Particule
+            class Particle {
+                constructor() {
+                    // Générer à une position aléatoire sur toute la page
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    
+                    this.size = Math.random() * 4 + 1;
+                    this.baseSize = this.size;
+                    
+                    // Vitesse plus lente pour un effet plus flottant
+                    this.speedX = (Math.random() - 0.5) * 0.8;
+                    this.speedY = (Math.random() - 0.5) * 0.8;
+                    
+                    // Palette de couleurs cyan-bleu
+                    this.color = `hsl(${Math.random() * 60 + 180}, 100%, 50%)`;
+                    this.life = 150 + Math.random() * 250; // Durée de vie plus longue
+                    this.maxLife = this.life;
+                    
+                    // Paramètres d'accélération pour des mouvements plus organiques
+                    this.accX = 0;
+                    this.accY = 0;
+                }
+                
+                update() {
+                    // Petite accélération aléatoire pour des mouvements plus naturels
+                    this.accX = (Math.random() - 0.5) * 0.05;
+                    this.accY = (Math.random() - 0.5) * 0.05;
+                    
+                    this.speedX += this.accX;
+                    this.speedY += this.accY;
+                    
+                    // Limiter la vitesse maximale
+                    this.speedX = Math.max(-1, Math.min(1, this.speedX));
+                    this.speedY = Math.max(-1, Math.min(1, this.speedY));
+                    
+                    // Déplacement de base
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    
+                    // Interaction avec la souris
+                    if (mouseIsMoving) {
+                        const dx = this.x - mouseX;
+                        const dy = this.y - mouseY;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 150) {
+                            // Effet d'attraction/répulsion basé sur la distance
+                            const force = (150 - distance) / 1500;
+                            
+                            // Les particules plus proches sont plus repoussées
+                            if (distance < 60) {
+                                this.x += dx * force * 2;
+                                this.y += dy * force * 2;
+                                this.size = this.baseSize * 1.5; // Agrandir quand interagit
+                            } else {
+                                // Les particules moyennement éloignées sont attirées
+                                this.x -= dx * force * 0.5;
+                                this.y -= dy * force * 0.5;
+                                this.size = this.baseSize * 1.2;
+                            }
+                        }
+                    } else {
+                        // Retour progressif à la taille normale
+                        if (this.size > this.baseSize) {
+                            this.size -= 0.05;
+                        }
+                    }
+                    
+                    // Rebonds sur les bords
+                    if (this.x < 0 || this.x > canvas.width) {
+                        this.speedX *= -0.5;
+                    }
+                    if (this.y < 0 || this.y > canvas.height) {
+                        this.speedY *= -0.5;
+                    }
+                    
+                    // Maintenir les particules dans l'écran
+                    this.x = Math.max(0, Math.min(canvas.width, this.x));
+                    this.y = Math.max(0, Math.min(canvas.height, this.y));
+                    
+                    // Vieillissement
+                    this.life -= 0.7; // Plus lent pour une durée de vie plus longue
+                    
+                    // Réduire la taille en fin de vie
+                    if (this.life < this.maxLife * 0.3) {
+                        this.size *= 0.995;
+                    }
+                }
+                
+                draw() {
+                    // Opacité basée sur la durée de vie
+                    const opacity = this.life / this.maxLife;
+                    ctx.globalAlpha = opacity;
+                    
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Effet de brillance
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = this.color;
+                    
+                    // Réinitialiser l'opacité
+                    ctx.globalAlpha = 1;
+                }
+                
+                isAlive() {
+                    return this.life > 0 && this.size > 0.2;
+                }
+            }
+            
+            let particles = [];
+            const maxParticles = 90; // Plus de particules pour remplir la page
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Ajouter de nouvelles particules progressivement
+                if (particles.length < maxParticles) {
+                    for (let i = 0; i < 2; i++) {
+                        particles.push(new Particle());
+                    }
+                }
+                
+                // Mettre à jour et dessiner les particules
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                    
+                    // Supprimer les particules mortes
+                    if (!particles[i].isAlive()) {
+                        particles.splice(i, 1);
+                        i--;
+                    }
+                }
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        });
+    </script>
 </body>
 </html> 
