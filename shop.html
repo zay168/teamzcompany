@@ -299,6 +299,16 @@
         document.addEventListener('selectstart', function(e) {
             e.preventDefault();
         });
+
+        // Gestion du menu burger
+        const burgerMenu = document.querySelector('.burger-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        burgerMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            // Optionnel: ajouter aussi une classe au burger pour le transformer en 'X' par exemple
+            burgerMenu.classList.toggle('active'); 
+        });
     </script>
     <script src="scripts/global.js" defer></script>
     <!-- Stranger Things Easter Egg Trigger -->
