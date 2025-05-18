@@ -1979,20 +1979,22 @@ body.upside-down-active .spore {
 /* Simulated CLI Easter Egg */
 #cli-container {
     position: fixed;
-    bottom: 10px;
-    left: 10px;
-    width: 60vw; /* Largeur relative */
-    max-width: 700px; /* Largeur max */
-    height: 40vh; /* Hauteur relative */
-    max-height: 400px; /* Hauteur max */
-    background-color: rgba(10, 20, 10, 0.9); /* Fond sombre semi-transparent */
-    border: 1px solid var(--accent-color, #0f0); /* Bordure accentuée */
-    border-radius: 5px;
-    z-index: 9995; /* Elevé, mais sous le feedback de touches/intro matrix */
-    display: none; /* Caché par défaut */
+    bottom: 20px; /* Ajusté pour un meilleur espacement */
+    left: 50%;
+    transform: translateX(-50%); /* Centré horizontalement */
+    width: 80%;
+    max-width: 800px; /* Largeur maximale augmentée */
+    height: 45vh; /* Hauteur légèrement augmentée */
+    max-height: 450px;
+    background-color: rgba(40, 42, 54, 0.95); /* Fond gris foncé moderne (type Dracula) */
+    border: 1px solid #44475a; /* Bordure subtile assortie */
+    border-radius: 8px; /* Coins légèrement plus arrondis */
+    z-index: 9995;
+    display: none;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35); /* Ombre plus prononcée et douce */
+    font-family: 'Fira Code', 'Consolas', 'Menlo', 'Courier New', monospace; /* Pile de polices modernes et fallback */
 }
 
 body.cli-active #cli-container {
@@ -2001,47 +2003,60 @@ body.cli-active #cli-container {
 
 #cli-output {
     flex-grow: 1;
-    overflow-y: auto; /* Permet le défilement vertical */
-    padding: 10px;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9rem;
-    color: #0f0; /* Vert Matrix/Terminal */
-    white-space: pre-wrap; /* Respecte les retours à la ligne et espaces */
-    word-break: break-all; /* Coupe les mots longs si nécessaire */
+    overflow-y: auto;
+    padding: 15px;
+    font-family: inherit; /* Hérite de #cli-container */
+    font-size: 1rem; /* Taille de police légèrement augmentée et plus lisible */
+    color: #50fa7b; /* Vert clair moderne (type Dracula) */
+    white-space: pre-wrap;
+    word-break: break-all;
+    line-height: 1.45; /* Interligne amélioré pour la lisibilité */
 }
 
 #cli-output .cli-prompt-color { /* Style pour le prompt dans l'historique */
-    color: var(--accent-color, #0f0);
-    opacity: 0.8;
+    color: #bd93f9; /* Violet moderne pour le prompt (type Dracula) */
+    opacity: 0.9;
 }
 
 #cli-output .cli-error { /* Style pour les messages d'erreur */
-    color: #ff4d4d;
+    color: #ff5555; /* Rouge moderne pour les erreurs (type Dracula) */
+    font-weight: bold;
 }
 
 #cli-input-line {
     display: flex;
     align-items: center;
-    padding: 5px 10px;
-    background-color: rgba(0, 0, 0, 0.3);
-    border-top: 1px solid var(--accent-color, #0f0);
+    padding: 10px 15px; /* Padding augmenté */
+    background-color: rgba(30, 31, 40, 0.9); /* Fond légèrement différent pour la ligne d'input */
+    border-top: 1px solid #44475a; /* Bordure assortie */
 }
 
 #cli-prompt {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9rem;
-    color: var(--accent-color, #0f0);
-    margin-right: 5px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #bd93f9; /* Violet moderne pour le prompt */
+    margin-right: 8px;
 }
 
 #cli-input {
     flex-grow: 1;
-    background: none;
+    background-color: transparent;
     border: none;
     outline: none;
-    color: #0f0;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9rem;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #f8f8f2; /* Blanc cassé pour le texte d'input (type Dracula) */
+    padding: 8px 5px; /* Padding ajusté */
+}
+
+#cli-input::placeholder {
+    color: #6272a4; /* Couleur de placeholder (type Dracula) */
+    opacity: 0.7;
+}
+
+#cli-input:focus {
+    outline: none; /* Pas d'outline par défaut, peut être géré par un effet de curseur */
+    box-shadow: none;
 }
 /* Fin Simulated CLI Easter Egg */
 

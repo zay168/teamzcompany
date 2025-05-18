@@ -375,8 +375,13 @@ function activateMatrixEffect() {
     const fontSize = 16;
     const columns = Math.floor(matrixCanvasElement.width / fontSize);
     const drops = [];
+    const speeds = []; // Vitesse de chute pour chaque colonne
+    const delays = []; // Délai avant que chaque colonne ne commence à tomber
+
     for (let x = 0; x < columns; x++) {
-        drops[x] = 1;
+        drops[x] = 1; // Position y initiale
+        speeds[x] = Math.random() * 0.5 + 0.2; // Vitesse entre 0.2 et 0.7
+        delays[x] = Math.random() * 200; // Délai jusqu'à 200 frames
     }
 
     function drawMatrix() {
@@ -384,9 +389,9 @@ function activateMatrixEffect() {
         // ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; 
         // ctx.fillRect(0, 0, matrixCanvasElement.width, matrixCanvasElement.height);
         // MAIS il faut un clearRect pour effacer les anciens frames une fois l'intro partie!
-        // On le conditionne : si l'intro n'est plus active, on clear avec un alpha faible.
+        // On le conditionne : si l'intro n'est plus active, on clear avec un alpha plus faible pour une trainée plus longue.
         if (!document.body.classList.contains('matrix-intro-active')) {
-             ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; // Effet de trainée classique
+             ctx.fillStyle = "rgba(0, 0, 0, 0.04)"; // Effet de trainée un peu plus long
              ctx.fillRect(0, 0, matrixCanvasElement.width, matrixCanvasElement.height);
         } else {
              // Pendant l'intro, on ne dessine que les lettres sans effacer
@@ -395,16 +400,32 @@ function activateMatrixEffect() {
              // Pour l'instant, on dessine quand même en arrière plan.
         }
 
-        ctx.fillStyle = "#0F0";
+        // ctx.fillStyle = "#0F0"; // L'ancienne couleur fixe
         ctx.font = fontSize + "px monospace";
 
         for (let i = 0; i < drops.length; i++) {
-            const text = chars[Math.floor(Math.random() * chars.length)];
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > matrixCanvasElement.height && Math.random() > 0.975) {
-                drops[i] = 0;
+            if (delays[i] > 0) {
+                delays[i]--;
+                continue; // Attend que le délai soit écoulé
             }
-            drops[i]++;
+
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            
+            // Le premier caractère de la goutte est plus brillant
+            if (drops[i] * fontSize < fontSize * 2) { // Si c'est le "premier" caractère visible
+                ctx.fillStyle = "#6F6"; // Vert plus clair
+            } else {
+                ctx.fillStyle = "#0F0"; // Vert standard
+            }
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+            // Si la goutte a atteint le bas de l'écran
+            if (drops[i] * fontSize > matrixCanvasElement.height && Math.random() > 0.975) { // Le Math.random() ici contrôle la probabilité de redémarrer
+                drops[i] = 0; // Réinitialise en haut
+                speeds[i] = Math.random() * 0.5 + 0.2; // Nouvelle vitesse aléatoire pour cette colonne
+                delays[i] = Math.random() * 150 + 50; // Nouveau délai aléatoire (50-200 frames) avant que cette colonne ne redémarre
+            }
+            drops[i] += speeds[i]; // Incrémente la position y avec sa vitesse propre
         }
         matrixAnimationId = requestAnimationFrame(drawMatrix);
     }
@@ -1391,4 +1412,4 @@ function disableRetroMode() {
         retroKeyHandler = null;
     }
 }
-// === Fin Retro Mode Easter Egg === 
+// === Fin Retro Mode Easter Egg ===
