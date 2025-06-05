@@ -52,7 +52,39 @@
     </nav>
 
     <main id="main-content">
-        <!-- Le contenu statique sera ici -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="cyber-glitch" data-text="TEAMZ">TEAMZ</h1>
+                <p class="hero-subtitle">Développement Web & Design Créatif</p>
+                <div class="hero-cta">
+                    <a href="#services" class="cta-button">Découvrir nos services</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="services-section">
+            <h2>Nos Services</h2>
+            <div class="services-grid">
+                <!-- Les services seront chargés dynamiquement depuis Supabase -->
+            </div>
+        </section>
+
+        <section id="videos" class="videos-section">
+            <h2>Nos Dernières Vidéos</h2>
+            <div class="videos-grid">
+                <!-- Les vidéos seront chargées dynamiquement -->
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <h2>Contactez-nous</h2>
+            <form id="contact-form" class="contact-form">
+                <input type="text" name="name" placeholder="Votre nom" required>
+                <input type="email" name="email" placeholder="Votre email" required>
+                <textarea name="message" placeholder="Votre message" required></textarea>
+                <button type="submit" class="submit-button">Envoyer</button>
+            </form>
+        </section>
     </main>
 
     <!-- L'application React sera montée ici -->
@@ -61,5 +93,60 @@
     <!-- Scripts -->
     <script src="scripts/global.js"></script>
     <script type="module" src="/src/main.jsx"></script>
+
+    <script>
+        // Chargement dynamique des services depuis Supabase
+        async function loadServices() {
+            const { createClient } = supabase;
+            const supabaseClient = createClient(
+                import.meta.env.VITE_SUPABASE_URL,
+                import.meta.env.VITE_SUPABASE_ANON_KEY
+            );
+
+            const { data: services } = await supabaseClient
+                .from('services')
+                .select('*')
+                .eq('active', true);
+
+            const servicesGrid = document.querySelector('.services-grid');
+            services?.forEach(service => {
+                const serviceCard = document.createElement('div');
+                serviceCard.className = 'service-card';
+                serviceCard.innerHTML = `
+                    <div class="service-icon">${service.icon}</div>
+                    <h3>${service.name}</h3>
+                    <p>${service.description}</p>
+                    <div class="service-price">À partir de ${service.price}€</div>
+                `;
+                servicesGrid.appendChild(serviceCard);
+            });
+        }
+
+        // Initialisation des animations GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.from('.hero-content', {
+            opacity: 0,
+            y: 100,
+            duration: 1,
+            ease: 'power4.out'
+        });
+
+        gsap.from('.service-card', {
+            scrollTrigger: {
+                trigger: '.services-section',
+                start: 'top center'
+            },
+            opacity: 0,
+            y: 50,
+            duration: 0.8,
+            stagger: 0.2
+        });
+
+        // Chargement du contenu au chargement de la page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadServices();
+        });
+    </script>
 </body>
 </html>
